@@ -6,7 +6,7 @@
 
 ### 2.进入到该目录下并且手动配置Git的相关信息
 
-![image](/assets/屏幕快照 2019-05-29 13.12.36.png)
+![image](https://github.com/yanqiaoyu/Sth-Worth-Recording/assets/屏幕快照 2019-05-29 13.12.36.png)
 
 ![](/assets/屏幕快照 2019-05-29 13.20.35.png)
 
