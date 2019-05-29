@@ -15,11 +15,40 @@
 手动执行如下命令
 
 ```
+#当然，在使用如下命令前，还要对git做一些初始配置，不过没必要在这里讲，因此略过
 #通过HTTPS的方式添加远程库，当然地址要是视自己的情况而定
 git remote add origin https://github.com/yanqiaoyu/Sth-Worth-Recording.git
 #也可以试一试git push -u origin master
 git push -f origin master
 ```
+
+此时，就完成了与远程库的关联，我们在GitBook Editor里面点击一下保存就会发现，可以同步了
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
