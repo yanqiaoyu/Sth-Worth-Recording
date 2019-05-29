@@ -12,3 +12,14 @@
 
 可以看到，在没有进行第一次保存之前，git的config文件是没有配置的。接下来就手动配置一下
 
+手动执行如下命令
+
+```
+#通过HTTPS的方式添加远程库，当然地址要是视自己的情况而定
+git remote add origin https://github.com/yanqiaoyu/Sth-Worth-Recording.git
+#也可以试一试git push -u origin master
+git push -f origin master
+```
+
+
+
