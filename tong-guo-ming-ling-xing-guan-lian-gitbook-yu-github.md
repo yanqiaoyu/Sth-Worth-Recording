@@ -8,7 +8,7 @@
 
 ![image](https://github.com/yanqiaoyu/Sth-Worth-Recording/blob/master/assets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-05-29%2013.12.36.png)
 
-![](/assets/屏幕快照 2019-05-29 13.20.35.png)
+![image](https://github.com/yanqiaoyu/Sth-Worth-Recording/blob/master/assets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-05-29%2013.20.35.png)
 
 可以看到，在没有进行第一次保存之前，git的config文件是没有配置的。接下来就手动配置一下
 
@@ -24,7 +24,7 @@ git push -f origin master
 
 此时，就完成了与远程库的关联，我们在GitBook Editor里面点击一下保存就会发现，可以同步了
 
-![](/assets/屏幕快照 2019-05-29 19.42.47.png)
+![image](https://github.com/yanqiaoyu/Sth-Worth-Recording/blob/master/assets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-05-29%2019.42.47.png)
 
 之后填写一下GitHub的登陆信息，就大功告成了
 
