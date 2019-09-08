@@ -4,5 +4,23 @@ In daily work,  we often need to capture the wireless packets either from the ai
 
 ## 1.Use Airpot 
 
-Airport is a built-in tool for wireless config in Macbook
+Airport is a built-in tool for wireless config in Macbook, with it we can easily cature 802.xx packets.
+
+First of all,establish a soft connection for airport\(so that we can call it anywhere in the terminal\)
+
+```text
+ln -s /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/sbin/airport
+```
+
+We dont have enough permission here, follow steps below
+
+* Reboot
+* Hold Command+R during rebooting
+* Open a terminal
+* Key in "csrutil disable"\("csrutil enable" to open the protection, you can open it after cofigure\)
+* Reboot again
+
+Now , we can call "airport" anywhere in the terminal instead of call it by its obsolute path
+
+
 
