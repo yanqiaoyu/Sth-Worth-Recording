@@ -8,7 +8,7 @@ This is the easiest way to link your Network Card to a specified band in WIN. No
 
 
 
-## 2.A Tool : WirelessMon \(WIN\)
+## 2.A Helpful Tool : WirelessMon \(WIN\)
 
 This is a very common-used tool in my daily work. With its GUI , you can also link your NC to a secified BSSID in WIN. If your Network Card doesn't support disable 2.4G&5G, its  a great alternative plan. It's worth noticing that this softvware would periodically scan AP aroud, so it may affect your throughput result  \(REMEMBER to close it during throughput test!\)
 
@@ -48,6 +48,16 @@ wpa_cli -i wlan0 scan_result
 After the two steps , AP's information may dispaly in your terminal , choose the one you want to link ,  mark it down and continue
 
 * Add the information to the configuration file
+
+```text
+wpa_cli -i wlan0 add_network  //it would return a number which would be used below
+//let's suppose it would return 2 as a handle
+```
+
+```text
+wpa_cli -i wlan0 set_network 2 ssid '"SSID"' //replace "SSID" with what u need
+
+```
 
 
 
