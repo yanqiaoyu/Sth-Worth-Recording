@@ -2,13 +2,13 @@
 
 In my daily work, I often need to connect to a AP whose 2.4G & 5G band shares the same SSID. This leads to a question : how can I link my Network Card to a specified BSSID?
 
-## 1.Disable & Enable your Network Card 2.4G & 5G band \(WIN\)
+## 1.Disable & Enable your Network Card 2.4G & 5G band \(Win\)
 
 This is the easiest way to link your Network Card to a specified band in WIN. No need to talk much
 
 
 
-## 2.A Helpful Tool : WirelessMon \(WIN\)
+## 2.A Helpful Tool : WirelessMon \(Win\)
 
 This is a very common-used tool in my daily work. With its GUI , you can also link your NC to a secified BSSID in WIN. If your Network Card doesn't support disable 2.4G&5G, its  a great alternative plan. It's worth noticing that this softvware would periodically scan AP aroud, so it may affect your throughput result  \(REMEMBER to close it during throughput test!\)
 
