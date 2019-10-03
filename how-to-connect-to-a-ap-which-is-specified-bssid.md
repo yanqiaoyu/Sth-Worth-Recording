@@ -80,6 +80,16 @@ wpa_cli -i wlan_0 disconect //
 ```text
 wpa_cli -i wlan0 set_network 2 bssid XX:XX:XX:XX:XX:XX //
 wpa_cli -i wlan0 save_config //
-wpa_con
+wpa_cli -i wlan0 reconnect //ensure there is no other effective AP in your list_network
 ```
+
+> Reference: 
+>
+> [https:// https://segmentfault.com/a/1190000011579147](https://segmentfault.com/a/1190000011579147)
+>
+> [https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md](https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md)
+
+
+
+
 
