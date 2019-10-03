@@ -33,10 +33,10 @@ wpa_supplicant -B -c/etc/wpa_supplicant/wpa_supplicant.conf -iwlan0 -Dnl80211,we
 
 After running it, use the wpa\_cli to continue
 
-* Scan AP around your NC
+* Scan AP around your Device
 
 ```text
-wpa_cli -i wlan0 scan  //wlan0 is the name of your NC,change it if needed
+wpa_cli -i wlan0 scan  //wlan0 is the name of your Network card,change it if needed
 ```
 
 * Get the scan result
@@ -56,7 +56,11 @@ wpa_cli -i wlan0 add_network  //it would return a number which would be used bel
 
 ```text
 wpa_cli -i wlan0 set_network 2 ssid '"SSID"' //replace "SSID" with what u need
-
+wpa_cli -i wlan0 set_network 2 key_mgmt WPA-PSK //
+wpa_cli -i wlan0 set_network 2 psk '"KEY"' //replace "KEY" with what u need
+wpa_cli -i wlan0 set_network 2 bssid XX:XX:XX:XX:XX:XX //specified the bssid u want
+wpa_cli -i wlan0 enable_network 2 //
+wpa_cli -i wlan0 save_config      //
 ```
 
 
