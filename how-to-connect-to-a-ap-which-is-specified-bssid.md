@@ -63,5 +63,23 @@ wpa_cli -i wlan0 enable_network 2 //
 wpa_cli -i wlan0 save_config      //
 ```
 
+Now , check your network status to ensure you have successfully connected to the AP you want !
 
+### 3.2 How to change my configure ?
+
+Well , what if I have a dual frequency router and I want to roam to another frequency?
+
+* First and most importantly , disconnect from your current AP
+
+```text
+wpa_cli -i wlan_0 disconect //
+```
+
+* Now , configure the wpa\_cli like above
+
+```text
+wpa_cli -i wlan0 set_network 2 bssid XX:XX:XX:XX:XX:XX //
+wpa_cli -i wlan0 save_config //
+wpa_con
+```
 
