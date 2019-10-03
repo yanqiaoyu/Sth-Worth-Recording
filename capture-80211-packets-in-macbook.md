@@ -1,4 +1,4 @@
-# How to capture 80211 packets in Macbook?
+# How to capture 802.1x packets in Macbook?
 
 In daily work,  we often need to capture the wireless packets either from the air or a specific interface. Its an easy thing to capture packets from a specific interface both in Win and Mac, but it comes a little complicate when we wanna capture some packets from the air. We need to install some special drivers in Win, so I decide to use my MacBook to capture some 802.xx packets.
 
