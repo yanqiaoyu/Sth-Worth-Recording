@@ -89,7 +89,15 @@ wpa_cli -i wlan0 reconnect //ensure there is no other effective AP in your list_
 >
 > [https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md](https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md)
 
+{% tabs %}
+{% tab title="First Tab" %}
+{% page-ref page="how-to-connect-to-a-ap-which-is-specified-bssid.md" %}
+{% endtab %}
 
+{% tab title="Second Tab" %}
+{% page-ref page="how-to-connect-to-a-ap-which-is-specified-bssid.md" %}
+{% endtab %}
+{% endtabs %}
 
 
 
