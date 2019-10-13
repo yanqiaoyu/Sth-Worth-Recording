@@ -6,6 +6,12 @@ Lately  I bought a Smart Adapter from XiaoMi, what depressed me is that I can on
 
 Maybe some other versions can also get toekn through APP directly, try it as your wish
 
+![](.gitbook/assets/ping-mu-kuai-zhao-20191013-22.47.42.png)
+
+### 2.Find your token in your App "Network Information"
+
+![This would change if you change your router](.gitbook/assets/ping-mu-kuai-zhao-20191013-22.42.02.png)
+
 
 
 
