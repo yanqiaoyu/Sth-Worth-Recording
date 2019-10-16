@@ -17,28 +17,35 @@ This would change if you change the router your adapter connects
 ### 3.Install "miio" in your Linux \(maybe ubuntu or else, I install it in my raspberry pi \)
 
 ```bash
-gitclonehttps://github.com/rytilahti/python-miio
+git clone https://github.com/rytilahti/python-miio
 
 cd python-miio/
 
+//install python3.5 first
 python3.5 setup.py install
 ```
 
-After that , check if everthing is installed 
+Check if everthing is installed
 
 ![](.gitbook/assets/ping-mu-kuai-zhao-20191013-23.04.20.png)
 
-what we need is that "**miplug**"
+what we need is the "**miplug**"
 
 ### 4.Use ''miplug" to control your MI-Plug
+
+Run the command below
+
+```bash
+miplus --help
+```
+
+![](.gitbook/assets/jie-ping-2019101617.47.20.png)
 
 From the Usage we can know that , we need "IP" and "token" to control the plug, all the two arguement can check in the App. Now , use the command to turn on&off the adapter
 
 ![](.gitbook/assets/ping-mu-kuai-zhao-20191013-23.10.33.png)
 
-If the command return "OK", that means you have successfully dominated this adapter ! Without the Mi Home App , link it to your Home Assist or whatever else ~
-
-
+Once return "OK", which means you have successfully dominated this adapter ! Without the Mi Home App , link it to your Home Assist or whatever else ~
 
 > [https://paper.seebug.org/616/](https://paper.seebug.org/616/)
 >
