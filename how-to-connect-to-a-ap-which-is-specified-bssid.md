@@ -49,12 +49,12 @@ After the two steps , AP's information may dispaly in your terminal , choose the
 
 * Add the information to the configuration file
 
-```text
+```bash
 wpa_cli -i wlan0 add_network  //it would return a number which would be used below
 //let's suppose it would return 2 as a handle
 ```
 
-```text
+```bash
 wpa_cli -i wlan0 set_network 2 ssid '"SSID"' //replace "SSID" with what u need
 wpa_cli -i wlan0 set_network 2 key_mgmt WPA-PSK //
 wpa_cli -i wlan0 set_network 2 psk '"KEY"' //replace "KEY" with what u need
@@ -71,13 +71,13 @@ Well , what if I have a dual frequency router and I want to roam to another freq
 
 * First and most importantly , disconnect from your current AP
 
-```text
+```bash
 wpa_cli -i wlan_0 disconect //
 ```
 
 * Now , configure the wpa\_cli like above
 
-```text
+```bash
 wpa_cli -i wlan0 set_network 2 bssid XX:XX:XX:XX:XX:XX //
 wpa_cli -i wlan0 save_config //
 wpa_cli -i wlan0 reconnect //ensure there is no other effective AP in your list_network
