@@ -1,8 +1,8 @@
-# Directly control my Mi-Plug\(Wi-Fi Edition\) without Mi Home App
+# Directly control my XiaoMi Adapter\(Wi-Fi Edition\) without Mi Home App
 
 Lately  I bought a Smart Adapter from XiaoMi, what depressed me is that I can only control my Mi-Plug through Mi Home App. I just want to control that adapter directly through some scripts or whaterver else , so I search the Internet and finally , after SO MANY disappointments , I got the token and it's time to record it !
 
-### 1.Install a specifi version of the Mi Home App \(5.4.63\)
+### 1.Install a specific version of the Mi Home App \(5.4.63\)
 
 Maybe some other versions can also get toekn through APP directly, try it as your wish
 
@@ -50,4 +50,6 @@ Once return "OK", which means you have successfully dominated this adapter ! Wit
 > [https://paper.seebug.org/616/](https://paper.seebug.org/616/)
 >
 > [https://bbs.hassbian.com/archiver/?tid-6717.html&page=1](https://bbs.hassbian.com/archiver/?tid-6717.html&page=1)
+>
+> [https://www.jianshu.com/p/da4bf815fcdb](https://www.jianshu.com/p/da4bf815fcdb)
 
