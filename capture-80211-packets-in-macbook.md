@@ -22,6 +22,8 @@ ln -s /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Re
 
 Now , we can call "airport" anywhere in the terminal instead of call it by its obsolute path
 
+Note !!!!: If you have updated your MB to Catalina , remember to "mount -uw /", to remount your root file sysytem
+
 ## 2. Start capturing
 
 Before we start capturing , please key in some commands below
