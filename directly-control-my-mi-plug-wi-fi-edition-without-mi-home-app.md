@@ -17,7 +17,7 @@ This would change if you change the router your adapter connects
 ### 3.Install "miio" in your Linux \(maybe ubuntu or else, I install it in my raspberry pi \)
 
 ```bash
-git clone https://github.com/rytilahti/python-miio
+git clone https://github.com/rytilahti/python-miio.git
 
 cd python-miio/
 
