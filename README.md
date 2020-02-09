@@ -1,4 +1,2 @@
-# 802.11协议族阅读
-
-有些东西,还是自己翻译一遍来的透彻..
+# To Record Sth worth recording
 
