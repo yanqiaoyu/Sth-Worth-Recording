@@ -45,11 +45,13 @@ From the Usage we can know that , we need "IP" and "token" to control the plug, 
 
 ![](.gitbook/assets/ping-mu-kuai-zhao-20191013-23.10.33.png)
 
-Once return "OK", which means you have successfully dominated this adapter ! Without the Mi Home App , link it to your Home Assist or whatever else ~
+Once return "OK", which means you have successfully dominated this adapter ! Without the Mi Home App , link it to your Home Assist or whatever else ~~
 
 > [https://paper.seebug.org/616/](https://paper.seebug.org/616/)
 >
 > [https://bbs.hassbian.com/archiver/?tid-6717.html&page=1](https://bbs.hassbian.com/archiver/?tid-6717.html&page=1)
 >
 > [https://www.jianshu.com/p/da4bf815fcdb](https://www.jianshu.com/p/da4bf815fcdb)
+
+
 
