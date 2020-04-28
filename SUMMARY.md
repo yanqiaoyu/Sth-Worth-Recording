@@ -5,3 +5,7 @@
 * [How to connect to a AP which is specified BSSID?](how-to-connect-to-a-ap-which-is-specified-bssid.md)
 * [Directly control my XiaoMi Adapter\(Wi-Fi Edition\) without Mi Home App](directly-control-my-mi-plug-wi-fi-edition-without-mi-home-app.md)
 
+## 算法
+
+* [Algorithm](suan-fa/algorithm.md)
+
