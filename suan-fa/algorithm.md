@@ -29,32 +29,75 @@ def solution(target, array):
 思路2：由于数组顺序递增，选取右上角或者左下角作为pivot（如果逆序的话，就换一个对角线）。这里选取左下角作为pivot。比pivot大，说明比pivot所在的一整列都大。比pivot小，说明比pivot所在的一整行都小
 
 ```python
-def solution(array, target):
-    #1.先找到行的长度，和有多少行
-    hangLength = len(array[0])
-    hangCount = len(array)
-    
-    pivotHang = hangCount-1
-    pivotLie = 0
-    
-    #2.选取这个矩阵中左下角的那个元素作为pivot,它是最后一行的第一个元素
-    pivotVar = array[pivotHang][pivotLie]
-    
-    #3.利用一个循环开始查找
-    while (if pivotLie <= hangLength) or (if pivotHang > 0):
-        #4.先跟pivot进行比较,相等，返回
-        if pivot == target:
-            return True
-        #5.target比pivot大，pivot的列数+1
-        elif pivot < target:
-            pivotLie += 1
-            pivot = array[pivotHang][pivotLie]
-        #6.target比pivot小, pivot的行数-1
-        elif pivot > target:
-            pivotHang -= 1
-            pivot = array[pivotHang][pivotLie]
-    #7.遍历了仍然没有，则不存在
-    return False
+# -*- coding:utf-8 -*-
+class Solution:
+    # array 二维列表
+    def Find(self, target, array):
+        #1.异常处理
+        if array == None:
+            return False
+        
+        #2.选取左下角为pivot
+        #左下角的坐标为 array[len(array)-1][0]
+        hang = len(array)-1
+        lie = 0
+        #考虑[[]]的情况
+        if hang <= 0:
+            return False
+        #3.开始比较,外围是一个循环
+        while True:
+            #如果pivot为target
+            if array[hang][lie] == target:
+                return True
+            #如果pivot比target大，去掉当前这一行
+            elif array[hang][lie] > target:
+                hang -= 1
+                #如果减掉1后已经越界,直接false
+                if hang < 0 :
+                    return False
+            #如果pivot比target小，去掉当前这一列
+            elif array[hang][lie] < target:
+                lie += 1
+                #如果加1越界，直接false
+                if lie > len(array[0])-1:
+                    return False
+```
 
+## 2.请实现一个函数，将一个字符串中的每个空格替换成“%20”。例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
+
+思路1 遍历替换
+
+```python
+class Solution:
+    def replaceSpace(self, s):
+        # write code here
+        s = list(s)
+        count=len(s)
+        for i in range(0,count):
+            if s[i]==' ':
+                s[i]='%20'
+        return ''.join(s)
+        
+        ''' 运行时间：26ms 占用内存：5860k'''
+```
+
+思路2 空间换时间
+
+```python
+class Solution:
+    # s 源字符串
+    def replaceSpace(self, s):
+        # write code here
+        newList = []
+        oldList = list(s)
+        for i in range(len(s)):
+            if oldList[i] == ' ':
+                newList.append('%20')
+            else:
+                newList.append(oldList[i])
+                
+        return ''.join(newList)
+        
+        '''运行时间：26ms 占用内存：5860k'''
 ```
 
