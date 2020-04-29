@@ -101,9 +101,29 @@ class Solution:
         '''运行时间：26ms 占用内存：5860k'''
 ```
 
+## 3.输入一个链表，按链表从尾到头的顺序返回一个ArrayList。
+
 ## 3.输入一个链表，按链表从尾到头的顺序返回一个ArrayList
 
+思路: reverse\(\), insert\(\), return \[::-1\]
+
  没啥好说的，也可以用reverse\(\)
+
+```python
+class Solution:
+    # 返回从尾部到头部的列表值序列，例如[1,2,3]
+    def printListFromTailToHead(self, listNode):
+        s=[]
+        while listNode:
+            s.append(listNode.val)
+            listNode = listNode.next
+        return s[::-1]
+        
+class Solution:
+    # 返回从尾部到头部的列表值序列，例如[1,2,3]
+    def printListFromTailToHead(self, listNode):
+        
+```
 
 ```python
 class Solution:
