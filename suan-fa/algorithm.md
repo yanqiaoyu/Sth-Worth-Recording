@@ -101,8 +101,6 @@ class Solution:
         '''运行时间：26ms 占用内存：5860k'''
 ```
 
-## 3.输入一个链表，按链表从尾到头的顺序返回一个ArrayList。
-
 ## 3.输入一个链表，按链表从尾到头的顺序返回一个ArrayList
 
 思路: reverse\(\), insert\(\), return \[::-1\]
