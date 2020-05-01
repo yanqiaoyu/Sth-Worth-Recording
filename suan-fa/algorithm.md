@@ -173,5 +173,64 @@ pre \[1,2,4,7,3,5,6,8\]  tin \[4,7,2,1,5,3,8,6\]
 
 每一次递归调用返回的都是的是根结点
 
+```python
+class Solution:
+    # 返回构造的TreeNode根节点
+    def reConstructBinaryTree(self, pre, tin):
+        #0.错误处理
+        if not pre or not tin:
+            return None
+        
+        #1.构造一棵树，传入根节点 并用root指向这个根节点
+        root = TreeNode(pre[0])
+        
+        #2.找到中序遍历中的根节点index
+        i = tin.index(pre[0])
+        
+        #3.对切割后的左右子树继续切割
+        #左子树的中序遍历和前序遍历
+        root.left = self.reConstructBinaryTree(pre[1:i+1], tin[0:i])
+        #右子树的中序遍历和前序遍历
+        root.right = self.reConstructBinaryTree(pre[i+1:], tin[i+1:])
+        
+        return root
+```
 
+## 5.用两个栈来实现一个队列，完成队列的Push和Pop操作
+
+思路
+
+定义两个栈 stackIn , stackOut
+
+入栈操作很简单, append就行
+
+出栈操作分两种:
+
+1.如果stackOut是空的，就把stackIn 里面的元素全部压入stackOut里面，让stackOut执行pop操作
+
+2.如果stackOut不是空的，说明上一次出栈时，stackOut还有数据没有pop完，直接让stackOut pop即可
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    #1.定义两个list
+    def __init__(self):
+        self.stackIn = []
+        self.stackOut = []
+    
+    def push(self, node):
+        #2.入栈操作很简单，直接append
+        self.stackIn.append(node)
+        
+    def pop(self):
+        #3.出栈操作分两步
+        #3.1 判断stackOut是否为空,如果为空，把In里面的数据都移动到Out里面来
+        if self.stackOut == []:
+            while self.stackIn != []:
+                self.stackOut.append(self.stackIn.pop())
+            return self.stackOut.pop()
+        #3.2不为空,直接pop
+        else:
+            return self.stackOut.pop()
+```
 
