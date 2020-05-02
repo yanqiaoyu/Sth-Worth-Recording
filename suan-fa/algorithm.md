@@ -270,3 +270,124 @@ class Solution:
                 return rotateArray[mid]
 ```
 
+## 7.大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项（从0开始，第0项为0，第1项是1）。n&lt;=39
+
+首先明确，什么是斐波那契数列
+
+用文字来说，就是斐波那契数列由0和1开始，之后的斐波那契数就是由之前的两数相加而得出。首几个斐波那契数是：[0](https://zh.wikipedia.org/wiki/0), [1](https://zh.wikipedia.org/wiki/1), [1](https://zh.wikipedia.org/wiki/1), [2](https://zh.wikipedia.org/wiki/2), [3](https://zh.wikipedia.org/wiki/3), [5](https://zh.wikipedia.org/wiki/5), [8](https://zh.wikipedia.org/wiki/8), [13](https://zh.wikipedia.org/wiki/13), [21](https://zh.wikipedia.org/wiki/21), [34](https://zh.wikipedia.org/wiki/34), [55](https://zh.wikipedia.org/wiki/55), [89](https://zh.wikipedia.org/wiki/89), [144](https://zh.wikipedia.org/wiki/144), [233](https://zh.wikipedia.org/wiki/233)
+
+思路1:递归,比较耗时
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def Fibonacci(self, n):
+        #0.异常处理
+        if n == 0 or n == 1:
+            return n
+        
+        #1.递归处理
+        return self.Fibonacci(n-1) + self.Fibonacci(n-2)
+```
+
+思路：循环
+
+```python
+class Solution:
+    def Fibonacci(self, n):
+        # write code here
+        #0.异常处理
+        if n == 0 or n == 1:
+            return n
+        
+        #1.计算结果是第一个数加上第二个数,循环叠加
+        first = 0
+        second = 1
+        result = 0
+        for i in range(2, n+1):
+            result = first + second
+            first = second
+            second = result
+        return result
+```
+
+## 8.一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法
+
+思路:斐波那契数列变种
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def jumpFloor(self, n):
+        # write code here
+        #0.异常处理
+        if n == 1 or n == 2:
+            return n
+        
+        #1.计算结果是第一个数加上第二个数,循环叠加
+        first = 1
+        second = 2
+        result = 3
+        for i in range(3, n+1):
+            result = first + second
+            first = second
+            second = result
+        return result
+```
+
+## 9.一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台阶总共有多少种跳法。
+
+还是斐波那契的变种
+
+分析:  
+       当n = 1 时， 只有一种跳法，即1阶跳：Fib\(1\) = 1;
+
+       当n = 2 时， 有两种跳的方式，一阶跳和二阶跳：Fib\(2\) = Fib\(1\) + Fib\(0\) = 2;
+
+       当n = 3 时，有三种跳的方式，第一次跳出一阶后，后面还有Fib\(3-1\)中跳法； 第一次跳出二阶后，后面还有Fib\(3-2\)中跳法；第一次跳出三阶后，后面还有Fib\(3-3\)中跳法
+
+        Fib\(3\) = Fib\(2\) + Fib\(1\)+Fib\(0\)=4;
+
+       当n = n 时，共有n种跳的方式，第一次跳出一阶后，后面还有Fib\(n-1\)中跳法； 第一次跳出二阶后，后面还有Fib\(n-2\)中跳法..........................第一次跳出n阶后，后面还有 Fib\(n-n\)中跳法.
+
+       Fib\(n\) = Fib\(n-1\)+Fib\(n-2\)+Fib\(n-3\)+..........+Fib\(n-n\)=Fib\(0\)+Fib\(1\)+Fib\(2\)+.......+Fib\(n-1\)
+
+      又因为Fib\(n-1\)=Fib\(0\)+Fib\(1\)+Fib\(2\)+.......+Fib\(n-2\)
+
+      两式相减得：Fib\(n\)-Fib\(n-1\)=Fib\(n-1\)         =====》  Fib\(n\) = 2\*Fib\(n-1\)     n &gt;= 2
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def jumpFloorII(self, number):
+        if number==1 or number==0:
+            return number
+        return 2*self.jumpFloorII(number-1)
+```
+
+
+
+## 10.我们可以用2_1的小矩形横着或者竖着去覆盖更大的矩形。请问用n个2_1的小矩形无重叠地覆盖一个2\*n的大矩形，总共有多少种方法？
+
+思路：还是斐波那契....
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def rectCover(self, number):
+        #0.异常处理
+        if number == 0 or number == 1 or number == 2:
+            return number
+        #1.相加
+        first = 1
+        second = 2
+        result = 0
+        
+        for i in range(3, number+1):
+            result = first + second
+            first = second
+            second = result
+            
+        return result
+```
+
