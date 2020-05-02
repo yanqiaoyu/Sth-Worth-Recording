@@ -463,5 +463,133 @@ class Solution:
         return result
 ```
 
+## 14.输入一个链表，输出该链表中倒数第k个结点。
 
+思路：Python 设置两个指针，p1，p2，先让p2走k-1步，然后再一起走，直到p2为最后一个 时，p1即为倒数第k个节点
+
+举个例子:
+
+\[1,2,3,4,5,6,7,8,9,10\]
+
+找出倒数第2个
+
+先让p1 走 2-1步
+
+然后p1 p2 一起走
+
+p2走到最后
+
+p1就走到了倒数第2个
+
+```python
+# -*- coding:utf-8 -*-
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def FindKthToTail(self, head, k):
+        # write code here
+        #异常处理
+        if head == None or k <= 0:
+            return None
+        
+        #1.定义两个指针p1 p2都指向链表的头部
+        p1= head 
+        p2= head
+        
+        #2.p1先走k-1步
+        for i in range(1,k):
+            if p1.next == None:
+                return None
+            else:
+                p1 = p1.next
+        
+        #3.p1 p2一起走
+        while p1.next != None:
+            p1 = p1.next
+            p2 = p2.next
+            
+        return p2
+```
+
+## 15.输入一个链表，反转链表后，输出新链表的表头。
+
+思路：3个指针
+
+![&#x660E;&#x767D;3&#x4E2A;&#x6307;&#x9488;&#x7684;&#x8D4B;&#x503C;&#x987A;&#x5E8F;](../.gitbook/assets/wei-ming-ming-wen-jian-3.jpg)
+
+```python
+class Solution:
+    # 返回ListNode
+    def ReverseList(self, pHead):
+        #0.异常处理
+        #pHead = None 或者pHead只有一个
+        if pHead ==  None or pHead.next == None:
+            return pHead
+        
+        #1.定义3个指针
+        pre = None
+        Cur = pHead
+        Tmp = None
+        
+        #2.循环里面不停逆序
+        while Cur != None:
+            Tmp = Cur.next
+            Cur.next = pre
+            pre = Cur
+            Cur = Tmp
+        return pre
+```
+
+## 16.输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。
+
+思路：没啥好说的，遍历，赋值
+
+```python
+# -*- coding:utf-8 -*-
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    # 返回合并后列表
+    def Merge(self, pHead1, pHead2):
+        # write code here
+        #0.异常处理
+        if pHead1 == None:
+            return pHead2
+        elif pHead2 == None:
+            return pHead1
+        elif pHead2 == None and pHead1 == None:
+            return None
+        
+        #1.定义一个新的链表，用来存放合成的数据
+        pResult = ListNode(0)
+        #再定义一个指针，用来移动赋值
+        p = pResult
+            
+        #2.循环处理后面的
+        while pHead1 != None and pHead2 != None:
+            #如果p2大于等于了p1
+            if pHead1.val <= pHead2.val:
+                p.next = pHead1
+                pHead1 = pHead1.next
+            #如果p1大于了p2
+            elif pHead1.val > pHead2.val:
+                p.next = pHead2
+                pHead2 = pHead2.next
+            
+            #每次赋值完成，p都要后移一位
+            p = p.next
+        #3.循环跳出了,说明有一个链表到头，后续的链表直接
+        if pHead2 != None:
+            p.next = pHead2
+        else:
+            p.next = pHead1
+            
+        #4.这个链表初始化的时候，给了一个0，但是实际是不需要的
+        return pResult.next
+```
 
