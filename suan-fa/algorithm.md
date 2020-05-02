@@ -391,3 +391,77 @@ class Solution:
         return result
 ```
 
+## 11.输入一个整数，输出该数二进制表示中1的个数。其中负数用补码表示。
+
+思路：如果一个整数不为0，那么这个整数至少有一位是1。如果我们把这个整数减1，那么原来处在整数最右边的1就会变为0，原来在1后面的所有的0都会变成1\(如果最右边的1后面还有0的话\)。其余所有位将不会受到影响。 把原来的整数和减去1之后的结果做与运算，从原来整数最右边一个1那一位开始所有位都会变成0。
+
+举例来说，6的二进制是 110 ，6-1=5的二进制是 101，6&5=100， 如此操作之后6中原来的110变为100，循环计数统计1的个数，直至n变为0为止。
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def NumberOf1(self, n):
+        count = 0
+        while n&0xffffffff != 0:
+            count += 1
+            n = n & (n-1)
+        return count
+```
+
+## 12.给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。保证base和exponent不同时为0
+
+思路: C++里面可能要考虑精度的问题，但是Python里面没有这样的问题，直接求乘积
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def Power(self, base, exponent):
+        #0.异常处理
+        #base 为0，数学上不具有意义
+        #exp 为0，=1
+        if base == 0:
+            return False
+        if exponent == 0:
+            return 1
+        
+        result = 1
+        #注意，这里调用了abs()函数来取绝对值
+        for i in range(1,abs(exponent)+1):
+            result = result * base
+        #1.如果exp是正值
+        if exponent > 0:
+            return result
+        elif exponent < 0:
+            return (1/result)
+```
+
+## 13.输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前半部分，所有的偶数位于数组的后半部分，并保证奇数和奇数，偶数和偶数之间的相对位置不变。
+
+思路：空间换时间
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def reOrderArray(self, array):
+        #0.异常处理
+        if len(array) == 0:
+            return array
+        
+        #1.空间换时间 定义两个奇偶数组分别存放最后拼接
+        odd = []
+        even = []
+        result = []
+        
+        #2.遍历一次 取出数字
+        for i in range(len(array)):
+            if array[i] % 2 == 1:
+                odd.append(array[i])
+            else:
+                even.append(array[i])
+                
+        result = odd + even
+        return result
+```
+
+
+
