@@ -234,3 +234,39 @@ class Solution:
             return self.stackOut.pop()
 ```
 
+## 6.把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。 输入一个非递减排序的数组的一个旋转，输出旋转数组的最小元素。 例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。 NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
+
+思路:既然看到了有序，考虑用二分法，但是这也不是单纯的有序，是进行了部分逆序的数组，所以要考虑一些特殊的情况
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def minNumberInRotateArray(self, rotateArray):
+        # write code here
+        #0.异常处理
+        if not rotateArray:
+            return 0
+        #二分法
+        #1.找high low mid位
+        high = len(rotateArray)-1
+        low = 0
+        
+        while (low <= high):
+            mid = int((high + low)/2)
+            #2.让mid与high去比较
+            #如果mid比high大,说明最小值在右边
+            #low=mid+1
+            if rotateArray[mid] > rotateArray[high]:
+                low = mid + 1
+            #如果mid比high小,说明最小值在左边,或者就是自己本身
+            elif rotateArray[mid] < rotateArray[high]:
+                #是自己本身的情况,那就是mid比high小，也比左边的数小
+                if rotateArray[mid] < rotateArray[mid-1]:
+                    return rotateArray[mid]
+                #不是，更改high的位置
+                else:
+                    high = mid-1
+            else:
+                return rotateArray[mid]
+```
+
