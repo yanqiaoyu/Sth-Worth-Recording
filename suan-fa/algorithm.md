@@ -593,3 +593,208 @@ class Solution:
         return pResult.next
 ```
 
+## 17.输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
+
+**当Tree1和Tree2都不为零的时候，才进行比较。否则直接返回false**
+
+**如果找到了对应Tree2的根节点的点，**
+
+**以这个根节点为为起点判断是否包含Tree2**
+
+**如果找不到，那么就再去root的左孩子当作起点，去判断时候包含Tree2**
+
+**如果还找不到，那么就再去root的右孩子当作起点，去判断时候包含Tree2**
+
+```python
+# -*- coding:utf-8 -*-
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    def HasSubtree(self, pRoot1, pRoot2):
+        #0.异常处理
+        if pRoot1 == None or pRoot2 == None:
+            return False
+        
+        #如果p2的根与p1的根相等了，则可能是子树了，开始判断
+        #如果第一次的根没找着，继续找左边的根，或者右边的根
+        return self.isSubTree(pRoot1, pRoot2) or self.HasSubtree(pRoot1.left,pRoot2) or self.HasSubtree(pRoot1.right, pRoot2)
+            
+        
+    def isSubTree(self, pRoot1, pRoot2):
+        #这是一个递归函数，如果递归到最后，pRoot2已经遍历完还没有返回False，说明是子树
+        if pRoot2 == None:
+            return True
+        #！！！如果递归到最后是pRoot1先递归完，说明也不是子树
+        if pRoot1 == None:
+            return False
+        #如果在某一次递归发现了节点不一致,返回false
+        if pRoot1.val != pRoot2.val:
+            return False
+        #进行递归
+        return self.isSubTree(pRoot1.left, pRoot2.left) and self.isSubTree(pRoot1.right, pRoot2.right)
+        
+```
+
+**注意，在HasSubTree里面遇到了一个坑，一开始是这样写的，一直无法通过**
+
+```python
+        #如果p2的根与p1的根相等了，则可能是子树了，开始判断
+        if pRoot1.val == pRoot2.val
+            return self.isSubTree(pRoot1, pRoot2)
+        #如果第一次的根没找着，继续找左边的根，或者右边的根
+        return  or self.HasSubtree(pRoot1.left,pRoot2) or self.HasSubtree(pRoot1.right, pRoot2)
+
+```
+
+这样写是有问题的，因为即使第一个根一致，一旦后面不一致，就会直接返回False了，而不会接着往下判断其他的根节点，因此如果想要这样写，要用个flag记录第一个根的结果，看看需不需要接着往下判断
+
+## 18.操作给定的二叉树，将其变换为源二叉树的镜像
+
+思路:递归交换就wan sir 了嗷凑弟弟
+
+```python
+# -*- coding:utf-8 -*-
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    # 返回镜像树的根节点
+    def Mirror(self, root):
+        #0.异常处理
+        if root == None:
+            return None
+        
+        #1.如果已经走到了叶子节点
+        if root.left == None and root.right == None:
+            return root
+        #2.不是叶子节点，继续递归交换
+        else:
+            root.left , root.right = root.right, root.left
+            self.Mirror(root.left)
+            self.Mirror(root.right)
+```
+
+## 19.输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字，例如，如果输入如下4 X 4矩阵： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 则依次打印出数字1,2,3,4,8,12,16,15,14,13,9,5,6,7,11,10.
+
+To be done
+
+## 20.定义栈的数据结构，请在该类型中实现一个能够得到栈中所含最小元素的min函数（时间复杂度应为O（1））。 注意：保证测试中不会当栈为空的时候，对栈调用pop\(\)或者min\(\)或者top\(\)方法。
+
+思路：多定义一个stackMin，用来存放最小值，当然，在压入和弹出的时候，都要判断是不是最小值
+
+```python
+class Solution:
+    def __init__(self):
+        self.stack = []
+        self.min_stack = []
+    def push(self, node):
+        self.stack.append(node)
+        #压入新node的时候同时要判断应不应该压入stackMin
+        if not self.min_stack or node <= self.min_stack[-1]:
+            self.min_stack.append(node)
+    def pop(self):
+        #同理，弹出node的时候也要判断是不是最小值
+        if self.stack[-1] == self.min_stack[-1]:
+            self.min_stack.pop()
+        self.stack.pop()
+    def top(self):
+        return self.stack[-1]
+    def min(self):
+        return self.min_stack[-1]
+```
+
+## 21.从上往下打印出二叉树的每个节点，同层节点从左至右打印。
+
+思路：用两个list，一个用来装节点，一个用来装节点的value。对于装节点的这个list，我们每次弹出最前面的节点，并依次将左节点和右节点加在后面。不管怎么样，这个装节点的list都能保证，将节点从上到下，同层节点从左到右进行添加、弹出。
+
+```python
+# -*- coding:utf-8 -*-
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    # 返回从上到下每个节点值列表，例：[1,2,3]
+    def PrintFromTopToBottom(self, root):
+        # write code here
+        #0.异常处理
+        if not root:
+            return []
+        
+        #1.定义两个队列,一个存放结果,一个存放每层节点
+        result = []
+        node = []
+        node.append(root)
+        
+        #2.循环处理
+        while node != []:
+            tmpNode = node.pop(0)
+            result.append(tmpNode.val)
+            
+            #看这个节点有没有左右节点
+            if tmpNode.left:
+                node.append(tmpNode.left)
+                
+            if tmpNode.right:
+                 node.append(tmpNode.right)
+        
+        return result
+```
+
+## 22.输入一个非空整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则输出No。假设输入的数组的任意两个数字都互不相同。
+
+思路:
+
+首先，什么是二叉搜索树？左边的都比根节点小，右边的都比根节点大
+
+其次，后序遍历有什么特点？左-》右-》根
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def VerifySquenceOfBST(self, sequence):
+        #0.异常处理
+        if len(sequence) == 1:
+            return True
+        
+        if not sequence:
+            return False
+        
+        #1.找到最后一个元素，它是根节点
+        root = sequence[-1]
+        Index = 0
+        #2.从头开始，找可能的左右子树的分界index
+        for i in range(len(sequence)):
+            if sequence[i] >= root:
+                Index = i
+                break
+        
+        leftSeq = sequence[0:Index]
+        rightSeq = sequence[Index:-1]
+        
+        #3.理论上来说，右子树里面的值，都比根结点大
+        for i in range(len(rightSeq)):
+            if rightSeq[i] < root:
+                return False
+            
+        #4.递归处理
+        #return self.VerifySquenceOfBST(leftSeq) and self.VerifySquenceOfBST(rightSeq)
+        leftFlag = True
+        rightFlag = True
+        #4.不能直接递归，先要判断左右子树为不为空
+        if len(leftSeq) > 0:
+            leftFlag = self.VerifySquenceOfBST(leftSeq)
+
+        if len(rightSeq) > 0:
+            rightFlag = self.VerifySquenceOfBST(rightSeq)
+
+        return leftFlag and rightFlag
+    
+```
+
