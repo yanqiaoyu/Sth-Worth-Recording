@@ -798,3 +798,37 @@ class Solution:
     
 ```
 
+## 23.输入一颗二叉树的根节点和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。
+
+思路:注意题目中关于路径的定义，必须是从根结点到叶结点，也就是说这其实是树的深度优先遍历DFS（前面那道题是广度优先遍历），那么答案基本已经出来了，在深度优先的同时，进行结点值的相加，判断当前路径是否符合期待
+
+## 27.数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。例如输入一个长度为9的数组{1,2,3,2,2,2,5,4,2}。由于数字2在数组中出现了5次，超过数组长度的一半，因此输出2。如果不存在则输出0。
+
+思路:空间换时间
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def MoreThanHalfNum_Solution(self, numbers):
+        #空间换时间
+        #0.异常处理
+        if not numbers:
+            return 0
+        if len(numbers) == 1:
+            return numbers[0]
+        
+        dic = {}
+        numLen = len(numbers)//2
+        
+        #1.遍历数组
+        for i in range(len(numbers)):
+            if dic.has_key(numbers[i]):
+                dic[numbers[i]] += 1
+                if dic[numbers[i]] > numLen:
+                    return numbers[i]
+            else:
+                dic[numbers[i]] = 1
+        
+        return 0
+```
+
