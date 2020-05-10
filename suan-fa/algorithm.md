@@ -681,7 +681,81 @@ class Solution:
 
 ## 19.输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字，例如，如果输入如下4 X 4矩阵： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 则依次打印出数字1,2,3,4,8,12,16,15,14,13,9,5,6,7,11,10.
 
-To be done
+思路：我快吐了，做好异常与特殊值的处理：只有一行？只有一列？只有一个？
+
+以及非矩阵可能重复读取的问题line 52
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    # matrix类型为二维列表，需要返回列表
+    def printMatrix(self, matrix):
+        #0.异常处理
+        if not matrix:
+            return False
+
+        if len(matrix[0]) == 1 and len(matrix) != 1:
+            result = []
+            for i in range(len(matrix)):
+                result.append(matrix[i][0])
+            return result
+        
+        if len(matrix) == 1:
+            result = []
+            for i in range(len(matrix[0])):
+                result.append(matrix[0][i])
+            return result
+
+
+        
+        #1.定义左上角，右下角两个位置
+        '''
+        1 2 3 .. 
+        4 5 6 ..
+        . .
+        . .      [y][x]
+        '''
+        #右下角坐标
+        x = len(matrix[0])-1
+        y = len(matrix)-1
+
+        #初始坐标
+        x0 = 0
+        y0 = 0
+        
+        result = []
+        
+        #2.循环遍历
+        #循环跳出条件,坐标溢出了
+        while y0 <= y and x0 <= x:
+            #上
+            for i in range(x0,x+1):
+                result.append(matrix[y0][i])
+
+            #右
+            #从y0+1行开始从上往下
+            for i in range(y0+1,y+1):
+                result.append(matrix[i][x])
+
+            if y0 != y:
+                #下
+                #从y行开始从右边倒数第二个 从右往左
+                for i in range(x-x0):
+                    result.append(matrix[y][x-1-i])
+
+                #左    
+                #从y-1行开始，从下往上,
+                for i in range(y-1-y0):
+                    result.append(matrix[y-1-i][x0])
+
+            #坐标缩圈
+            x0 += 1
+            y0 += 1
+            x -= 1
+            y -= 1
+        print(result)
+        return result
+```
 
 ## 20.定义栈的数据结构，请在该类型中实现一个能够得到栈中所含最小元素的min函数（时间复杂度应为O（1））。 注意：保证测试中不会当栈为空的时候，对栈调用pop\(\)或者min\(\)或者top\(\)方法。
 
