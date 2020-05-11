@@ -976,3 +976,51 @@ class Solution:
 
 思路：不需要额外的数组或者hash table来保存，题目里写了数组里数字的范围保证在0 ~ n-1 之间，所以可以利用现有数组设置标志，当一个数字被访问过后，可以设置对应位上的数 + n，之后再遇到相同的数时，会发现对应位上的数已经大于等于n了，那么直接返回这个数即可。
 
+## ？.输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
+
+思路1：与之前的深度遍历类似，修改了最终变量的判断，不是路径的和，而是路径的长度，此长度即为深度
+
+```python
+class Solution:
+    def TreeDepth(self, pRoot):
+        # write code here
+        #之前有一道，利用深度优先遍历，求路径的题，与这道类似，思想类似
+        #定义结果
+        result = [0]
+        #0.异常处理
+        if not pRoot:
+            return 0
+        
+        #路径
+        path = [pRoot.val]
+        
+        #1.递归调用
+        self.DFS(pRoot, result, path)
+        
+        return result[0]
+        
+    def DFS(self, pRoot, result, path):
+        #2.如果左子树右子树都没有了，说明到了叶子,判断这个path这个数组的长度，即为深度
+        if not pRoot.left and not pRoot.left:
+            if len(path) > result[0]:
+                result[0] = len(path)
+        #3.如果左子树还有
+        if pRoot.left:
+            #继续深入
+            self.DFS(pRoot.left, result, path+[pRoot.left.val])
+        #4.如果右子树还有
+        if pRoot.right:
+            self.DFS(pRoot.right, result, path+[pRoot.right.val])
+```
+
+思路2：看看别人写的
+
+```python
+class Solution:
+    def TreeDepth(self, pRoot):
+ 
+        if pRoot==None:
+               return 0
+        return max(self.TreeDepth(pRoot.left),self.TreeDepth(pRoot.right))+1
+```
+
