@@ -876,6 +876,42 @@ class Solution:
 
 思路:注意题目中关于路径的定义，必须是从根结点到叶结点，也就是说这其实是树的深度优先遍历DFS（前面那道题是广度优先遍历），那么答案基本已经出来了，在深度优先的同时，进行结点值的相加，判断当前路径是否符合期待
 
+注意，可能在递归调用里面传的是path + \[xxx.val\],这可以保证如果最后的结果不是我们要的，可以回退到根结点的位置，而不需要删除已经压入的结点
+
+```python
+class Solution:
+    # 返回二维列表，内部每个列表表示找到的路径
+    def FindPath(self, root, expectNumber):
+        # write code here
+        #定义用来存放最终结果的二维列表
+        result = []
+        #0.异常处理
+        if not root:
+            return result
+        
+        #定义用来存放单个结果的数组
+        path = [root.val]
+        
+        #1.开始进行深度优先的遍历
+        self.DFS(root, expectNumber, path, result)
+        return result
+        
+    def DFS(self, root, expectNumber, path, result):
+        #如果左子树，右子树都不存在，且路径之和等于expectNumber
+        #那就把当前路径加入总结果
+        if not root.left and not root.right and sum(path) == expectNumber:
+            result.append(path)
+        #如果存在左子树,继续递归，因为是深度优先
+        if root.left:
+            self.DFS(root.left, expectNumber, path+[root.left.val], result)
+        if root.right:
+            self.DFS(root.right, expectNumber, path+[root.right.val], result)
+```
+
+## 24.输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针random指向一个随机节点），请对此链表进行深拷贝，并返回拷贝后的头结点。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）
+
+
+
 ## 27.数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。例如输入一个长度为9的数组{1,2,3,2,2,2,5,4,2}。由于数字2在数组中出现了5次，超过数组长度的一半，因此输出2。如果不存在则输出0。
 
 思路:空间换时间
