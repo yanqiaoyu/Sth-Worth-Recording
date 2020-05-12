@@ -1024,3 +1024,44 @@ class Solution:
         return max(self.TreeDepth(pRoot.left),self.TreeDepth(pRoot.right))+1
 ```
 
+## ?:输入一棵二叉树，判断该二叉树是否是平衡二叉树。在这里，我们只需要考虑其平衡性，不需要考虑其是不是排序二叉树
+
+思路：我再次使用了DFS的方法来遍历左右两颗子树的深度，求两颗左右子树的差值，来判断是否平衡
+
+```python
+class Solution:
+    def IsBalanced_Solution(self, pRoot):
+        # write code here
+        #0.异常处理
+        if not pRoot:
+            return True
+        if pRoot == {}:
+            return True
+        
+        #1.对左子树与右子树分别求最大深度,计算差值
+        LeftResult = [0]
+        RightResult = [0]
+        
+        if pRoot.left:
+            path1 = [pRoot.left]
+            self.MaxDeep(pRoot.left, path1, LeftResult)
+
+        if pRoot.right:
+            path2 = [pRoot.right]
+            self.MaxDeep(pRoot.right, path2, RightResult)
+
+        if abs(LeftResult[0] - RightResult[0]) > 1:
+            return False
+        else:
+            return True
+        
+    def MaxDeep(self, root, path, result):
+        if not root.left and not root.right:
+            if result[0] < len(path):
+                result[0] = len(path)
+        if root.left:
+            self.MaxDeep(root.left, path+[root.left], result)
+        if root.right:
+            self.MaxDeep(root.right, path+[root.right], result)
+```
+
