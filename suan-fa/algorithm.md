@@ -1182,3 +1182,33 @@ class Solution:
             self.MaxDeep(root.right, path+[root.right], result)
 ```
 
+## ?.请实现一个函数用来找出字符流中第一个只出现一次的字符。例如，当从字符流中只读出前两个字符"go"时，第一个只出现一次的字符是"g"。当从该字符流中读出前六个字符“google"时，第一个只出现一次的字符是"l"。
+
+思路：空间换时间,前面有很多题都非常类似
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def __init__(self):
+        self.charList = []
+        self.searchMap = {}
+        #self.finalIndex = 0
+    # 返回对应char
+    def FirstAppearingOnce(self):
+        for i in range(len(self.charList)):
+            if self.searchMap[self.charList[i]] == 1:
+                return self.charList[i]
+        return '#'
+        
+    def Insert(self, char):
+        # write code here
+        self.charList.append(char)
+        #self.finalIndex = len(charList)
+        if self.searchMap.has_key(char):
+            self.searchMap[char] += 1
+        else:
+            self.searchMap[char] = 1
+```
+
+
+
