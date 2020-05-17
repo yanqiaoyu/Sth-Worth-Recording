@@ -994,36 +994,69 @@ class Solution:
             return 0
 ```
 
+## 27.输入n个整数，找出其中最小的K个数。例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4,。
+
+思路：排序，返回。主要考虑不同的排序算法，这里选择快速排序和堆排序
 
 
-## 27.数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。例如输入一个长度为9的数组{1,2,3,2,2,2,5,4,2}。由于数字2在数组中出现了5次，超过数组长度的一半，因此输出2。如果不存在则输出0。
 
-思路:空间换时间
+## 32.在一个字符串\(0&lt;=字符串长度&lt;=10000，全部由字母组成\)中找到第一个只出现一次的字符,并返回它的位置, 如果没有则返回 -1（需要区分大小写）.（从0开始计数）
+
+思路：空间换时间，初始化为256个空的列表（类似于int数组）然后利用Index对应的ASCII数字做记录 值得记住的两个函数 char-&gt;ASCII ord\(\), ASCII-&gt;char chr\(\)
+
+或者使用字典
+
+这里我第一次思考时存在一个误区，以为字典由于无序不能使用，实际上第一遍遍历完字符串后，第二次再遍历一次字符串就行了，遍历的不是字典，所以与有序无序无关
+
+```python
+class Solution:
+    def FirstNotRepeatingChar(self, s):
+        # write code here
+        #0.异常处理
+        if not s:
+            return -1
+        
+        #1.空间换时间，但是由于题目中需要的是第一次出现，而字典是无序的，这里使用
+        #类似C语言的数组的空序列作为载体
+        
+        charList = [0]*256
+        
+        #2.遍历这个字符串，把他们转换为ASCII码然后逐个写入有序数组对应的Index中
+        sList = list(s)
+        for i in range(len(sList)):
+            charList[ord(sList[i])] += 1
+            
+        for i in range(len(sList)):
+            if charList[ord(sList[i])] == 1:
+                return i
+        return -1
+```
 
 ```python
 # -*- coding:utf-8 -*-
 class Solution:
-    def MoreThanHalfNum_Solution(self, numbers):
-        #空间换时间
+    def FirstNotRepeatingChar(self, s):
+        # write code here
         #0.异常处理
-        if not numbers:
-            return 0
-        if len(numbers) == 1:
-            return numbers[0]
+        if not s:
+            return -1
         
+        #1.利用字典，空间换时间
         dic = {}
-        numLen = len(numbers)//2
         
-        #1.遍历数组
-        for i in range(len(numbers)):
-            if dic.has_key(numbers[i]):
-                dic[numbers[i]] += 1
-                if dic[numbers[i]] > numLen:
-                    return numbers[i]
+        sList = list(s)
+        for i in range(len(sList)):
+            if dic.has_key(sList[i]):
+                dic[sList[i]] += 1
             else:
-                dic[numbers[i]] = 1
+                dic[sList[i]] = 1
         
-        return 0
+        #2.第二次遍历这个字符串
+        for i in range(len(sList)):
+            if dic[sList[i]] == 1:
+                return i
+            
+        return -1
 ```
 
 ## ?.在一个长度为n的数组里的所有数字都在0到n-1的范围内。 数组中某些数字是重复的，但不知道有几个数字是重复的。也不知道每个数字重复几次。请找出数组中任意一个重复的数字。 例如，如果输入长度为7的数组{2,3,1,0,2,5,3}，那么对应的输出是第一个重复的数字2。
