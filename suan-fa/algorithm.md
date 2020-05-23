@@ -910,6 +910,77 @@ class Solution:
 
 ## 24.输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针random指向一个随机节点），请对此链表进行深拷贝，并返回拷贝后的头结点。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）
 
+```python
+class Solution:
+    # 返回 RandomListNode
+    def Clone(self, pHead):
+        # write code here
+        #0.异常处理
+        if not pHead:
+            return pHead
+        
+        #1.第一步，复制每个旧结点，并把它链接在旧结点之后
+        # 例如 A->B->C 变为 A->A_new->B->B_new->C->C_new
+        
+        #定义一个tmp指向与pHead一致的位置
+        tmp = pHead
+        #这个循环显然需要执行到tmp为空的时候
+        while tmp:
+            #既然是深拷贝，显然需要new一个新的出来
+            #初始化传的值，就是需要拷贝的结点的label
+            newNode = RandomListNode(tmp.label)
+            #想象一下，当前的链表是这样A -----> B
+            #                        A.new
+            #显然，要建立成 A ---> A.new ---> B 这样的链表，先要让A.new链接B，不然会找不到B
+            #让 A.new指向B, B是什么？ B是A.next
+            newNode.next = tmp.next
+            #此时的链表是  A ---> B
+            #                  |
+            #               A.new 
+            #再让A指向A.new
+            tmp.next = newNode
+            #最后让tmp指向B，开始新的复制
+            tmp = newNode.next
+        #循环完成后，tmp到了链表尾部的None位置
+        #并且链表已成 A ---> A.new ---> B ---> B.new ...
+        
+        #再把tmp拉回来，进行第二步
+        tmp = pHead
+        
+        #2.第二步,复制random指针
+        while tmp:
+            #我们假设加了random的指针是这样的
+            #  ------------------
+            # |                 |
+            # A ---> A.new ---> B ---> B.new
+            #那么 A.new的random要指向谁呢？
+            #应该要指向，被复制结点的random指针所指向结点的下一个结点
+            #             (A)      (A.random)   (B)    (B.new)
+            if tmp.random:
+                tmp.next.random = tmp.random.next
+            else:
+                tmp.next.random = None
+            tmp = tmp.next.next
+        
+        #3.第三步，断链，分成两个链表
+        tmp = pHead
+        newHead = pHead.next
+        newNode = pHead.next
+        while tmp:
+            #只要newNode.next的下一个结点还存在，就继续
+            #让A指向B
+            tmp.next = newNode.next
+            
+            if newNode.next:
+                #让A.new指向 B.new
+                newNode.next = tmp.next.next
+            else:
+                newNode.next = None
+            tmp = tmp.next
+            newNode = newNode.next
+        return newHead
+```
+
 
 
 ## 25.输入一个字符串,按字典序打印出该字符串中字符的所有排列。例如输入字符串abc,则打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。
