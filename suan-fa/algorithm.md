@@ -998,7 +998,55 @@ class Solution:
 
 思路：排序，返回。主要考虑不同的排序算法，这里选择快速排序和堆排序
 
+快速排序
 
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def GetLeastNumbers_Solution(self, tinput, k):
+        # write code here
+        #0.异常处理
+        if not tinput:
+            return []
+        if k > len(tinput):
+            return []
+        
+        #1.快排排序
+        s = self.QuickSort(tinput, 0, len(tinput)-1)
+        
+        return s[:k]
+        
+    def QuickSort(self, s, low, high):
+        #如果低位仍然比高位低，则继续找pivot值
+        if low < high:
+            pivot = self.Partition(s, low, high)
+            
+            #左半部分
+            self.QuickSort(s, low, pivot-1)
+            #右半部分
+            self.QuickSort(s, pivot+1, high)
+        return s
+    
+    def Partition(self, s, low, high):
+        pivotVal = s[low]
+        
+        while low < high:
+            #从右往左找，找到第一个比pivot小的
+            while low < high and s[high] >= pivotVal:
+                high -= 1
+            s[low] = s[high]
+            #从左往右找，找到第一个比pivot大的
+            while low < high and s[low] <= pivotVal:
+                low += 1
+            s[high] = s[low]
+            
+        s[low] = pivotVal
+        return low
+        
+        
+```
+
+堆排序：TBD
 
 ## 32.在一个字符串\(0&lt;=字符串长度&lt;=10000，全部由字母组成\)中找到第一个只出现一次的字符,并返回它的位置, 如果没有则返回 -1（需要区分大小写）.（从0开始计数）
 
