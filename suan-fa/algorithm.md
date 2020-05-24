@@ -1157,6 +1157,41 @@ class Solution:
 
 TBD
 
+## 30.输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
+
+思路：参考了别人的思路，其实是自己定义自己的一个cmp函数，然后对这个数组排序
+
+```python
+from functools import cmp_to_key
+class Solution:
+    def PrintMinNumber(self, numbers):
+        # write code here
+        #0.异常处理
+        if not numbers:
+            return ''
+        
+        if len(numbers) < 2:
+            return numbers[0]
+        s = sorted(numbers, key=cmp_to_key(self.myCmp))
+        result=''
+        for i in range(len(s)):
+            result += str(s[i])
+        return result
+            
+        
+    #1.自定义一个比较函数，进来两个数，比较一前一后哪个更大
+    def myCmp(self, a, b):
+        str1 = str(a)+str(b)
+        str2 = str(b)+str(a)
+        
+        if str1 > str2:
+            return 1
+        elif str1 < str2:
+            return -1
+        else:
+            return 0
+```
+
 ## 32.在一个字符串\(0&lt;=字符串长度&lt;=10000，全部由字母组成\)中找到第一个只出现一次的字符,并返回它的位置, 如果没有则返回 -1（需要区分大小写）.（从0开始计数）
 
 思路：空间换时间，初始化为256个空的列表（类似于int数组）然后利用Index对应的ASCII数字做记录 值得记住的两个函数 char-&gt;ASCII ord\(\), ASCII-&gt;char chr\(\)
