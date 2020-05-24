@@ -1250,6 +1250,82 @@ class Solution:
 
 思路：不需要额外的数组或者hash table来保存，题目里写了数组里数字的范围保证在0 ~ n-1 之间，所以可以利用现有数组设置标志，当一个数字被访问过后，可以设置对应位上的数 + n，之后再遇到相同的数时，会发现对应位上的数已经大于等于n了，那么直接返回这个数即可。
 
+## ?.统计一个数字在排序数组中出现的次数。
+
+思路：TopK问题，采用递归和循环实现的二分法分别来寻找第一次和最后一次出现的k值
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def GetNumberOfK(self, data, k):
+        # write code here
+        #0.异常处理
+        if not data:
+            return None
+
+        #1.本质是TopK问题，找出第一次出现和最后一次出现的位置，相减即可
+        # 本次将分别使用递归和循环分别解决
+        low = 0
+        high = len(data)-1
+        s = self.getFirstK(data, low, high, k)
+        b = self.getLastK(data, low, high, k)
+        if s == b == None:
+            return 0
+        else:
+            return b-s+1
+    '''
+    #递归
+    def getFirstK(self, data, low, high, k):
+        #计算mid值
+        mid = (low + high) // 2
+        #只要low还比high低
+        if low <= high:
+            #data[mid]比k值大
+            if data[mid] > k:
+                high = mid - 1
+                return self.getFirstK(data, low, high, k)
+            #data[mid]比k值小
+            elif data[mid] < k:
+                low = mid + 1
+                return self.getFirstK(data, low, high, k)
+            #data[mid]与K值一样,找前面还有没有
+            elif data[mid] == k:
+                #如果前面还有，还需要继续递归
+                if data[mid-1] == k:
+                    high = mid -1
+                    return self.getFirstK(data, low, high, k)
+                #如果前面没了，或者mid-1不是k了,return
+                elif mid == 0 or data[mid - 1] != k:
+                    return mid
+    '''
+    def getFirstK(self, data, low, high, k):
+        while low <= high:
+            mid = (low + high)// 2
+            if data[mid] < k:
+                low = mid+1
+            elif data[mid] > k:
+                high = mid -1
+            elif data[mid] == k:
+                if mid == 0 or data[mid-1] != k:
+                    return mid
+                else:
+                    high = mid-1
+
+    #循环
+    def getLastK(self, data, low, high, k):
+        while low <= high:
+            mid = (low + high)// 2
+            if data[mid] < k:
+                low = mid+1
+            elif data[mid] > k:
+                high = mid -1
+            elif data[mid] == k:
+                if mid == len(data)-1 or data[mid+1] != k:
+                    return mid
+                else:
+                    low = mid+1
+```
+
 ## ?.输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
 
 思路1：与之前的深度遍历类似，修改了最终变量的判断，不是路径的和，而是路径的长度，此长度即为深度
