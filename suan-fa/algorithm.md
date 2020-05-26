@@ -1285,7 +1285,7 @@ class Solution:
 
 思路：不需要额外的数组或者hash table来保存，题目里写了数组里数字的范围保证在0 ~ n-1 之间，所以可以利用现有数组设置标志，当一个数字被访问过后，可以设置对应位上的数 + n，之后再遇到相同的数时，会发现对应位上的数已经大于等于n了，那么直接返回这个数即可。
 
-## ?.统计一个数字在排序数组中出现的次数。
+## 35.统计一个数字在排序数组中出现的次数。
 
 思路：TopK问题，采用递归和循环实现的二分法分别来寻找第一次和最后一次出现的k值
 
@@ -1361,7 +1361,7 @@ class Solution:
                     low = mid+1
 ```
 
-## ?.输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
+## 36.输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
 
 思路1：与之前的深度遍历类似，修改了最终变量的判断，不是路径的和，而是路径的长度，此长度即为深度
 
@@ -1409,7 +1409,7 @@ class Solution:
         return max(self.TreeDepth(pRoot.left),self.TreeDepth(pRoot.right))+1
 ```
 
-## ?.输入一棵二叉树，判断该二叉树是否是平衡二叉树。在这里，我们只需要考虑其平衡性，不需要考虑其是不是排序二叉树
+## 37.输入一棵二叉树，判断该二叉树是否是平衡二叉树。在这里，我们只需要考虑其平衡性，不需要考虑其是不是排序二叉树
 
 思路：我再次使用了DFS的方法来遍历左右两颗子树的深度，求两颗左右子树的差值，来判断是否平衡
 
@@ -1448,6 +1448,34 @@ class Solution:
             self.MaxDeep(root.left, path+[root.left], result)
         if root.right:
             self.MaxDeep(root.right, path+[root.right], result)
+```
+
+## 40.输入一个递增排序的数组和一个数字S，在数组中查找两个数，使得他们的和正好是S，如果有多对数字的和等于S，输出两个数的乘积最小的。
+
+思路:左右夹逼
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def FindNumbersWithSum(self, array, tsum):
+        # write code here
+        #0. 异常处理
+        if not array:
+            return []
+        
+        #1.注意，数组是递增的，从两边往中间夹逼
+        low = 0
+        high = len(array)-1
+        
+        while low <= high:
+            #如果两数之和比tsum大，high-1
+            if (array[low] + array[high]) > tsum:
+                high -= 1
+            elif (array[low] + array[high]) < tsum:
+                low += 1
+            else:
+                return [array[low], array[high]]
+        return []
 ```
 
 ## ?.请实现一个函数用来找出字符流中第一个只出现一次的字符。例如，当从字符流中只读出前两个字符"go"时，第一个只出现一次的字符是"g"。当从该字符流中读出前六个字符“google"时，第一个只出现一次的字符是"l"。
