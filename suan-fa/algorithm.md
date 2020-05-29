@@ -1450,6 +1450,48 @@ class Solution:
             self.MaxDeep(root.right, path+[root.right], result)
 ```
 
+## 39.小明很喜欢数学,有一天他在做数学作业时,要求计算出9~16的和,他马上就写出了正确答案是100。但是他并不满足于此,他在想究竟有多少种连续的正数序列的和为100\(至少包括两个数\)。没多久,他就得到另一组连续正数和为100的序列:18,19,20,21,22。现在把问题交给你,你能不能也很快的找出所有和为S的连续正数序列? Good Luck!
+
+思路：参考讨论区的双指针滑动窗口方法
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def FindContinuousSequence(self, tsum):
+        # write code here
+        #0.异常处理
+        if tsum < 3:
+            return []
+        
+        #1.双指针滑动窗口
+        #注意，连续正数序列,从1开始
+        low = 1
+        high = 2
+        result=[]
+        tmp=[]
+        #当这个滑动窗口还没越界，可以接着移动
+        while low < high:
+            #等差数列求和公式 (a0 + an)*n/2
+            mysum = (low + high)*(high-low+1)/2
+            #如果求和比实际的小
+            if mysum < tsum:
+                #那右边的就加大
+                high += 1
+            elif mysum > tsum:
+                low += 1
+            #如果求和一致
+            else:
+                #添加结果
+                tmp=[]
+                for i in range(low, high+1):
+                    tmp.append(i)
+                result.append(tmp)
+                low += 1
+                
+        return result
+                
+```
+
 ## 40.输入一个递增排序的数组和一个数字S，在数组中查找两个数，使得他们的和正好是S，如果有多对数字的和等于S，输出两个数的乘积最小的。
 
 思路:左右夹逼
