@@ -1599,7 +1599,67 @@ class Solution:
             return False
 ```
 
+## 44.每年六一儿童节,牛客都会准备一些小礼物去看望孤儿院的小朋友,今年亦是如此。HF作为牛客的资深元老,自然也准备了一些小游戏。其中,有个游戏是这样的:首先,让小朋友们围成一个大圈。然后,他随机指定一个数m,让编号为0的小朋友开始报数。每次喊到m-1的那个小朋友要出列唱首歌,然后可以在礼品箱中任意的挑选礼物,并且不再回到圈中,从他的下一个小朋友开始,继续0...m-1报数....这样下去....直到剩下最后一个小朋友,可以不用表演,并且拿到牛客名贵的“名侦探柯南”典藏版\(名额有限哦!!^\_^\)。请你试着想下,哪个小朋友会得到这份礼品呢？\(注：小朋友的编号是从0到n-1\) 如果没有小朋友，请返回-1
 
+思路：约瑟夫环问题。参考文章[https://cloud.tencent.com/developer/article/1164728](https://cloud.tencent.com/developer/article/1164728)
+
+解法1 数学分析
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def LastRemaining_Solution(self, n, m):
+        # write code here
+        #0.异常处理
+        if n < 1:
+            return -1
+        
+        #1.数学分析法
+        out = 0
+        for i in range(2, n+1):
+            out = (out + m)%i
+        return out
+```
+
+解法2：用数组模拟这个过程，复杂度高一点，但是容易理解
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def LastRemaining_Solution(self, n, m):
+        # write code here
+        #0.异常处理
+        if n < 1:
+            return -1
+        
+        #1.定义一个[0,1,...,n]的数组,定义一个指向该删除的小朋友的指针
+        array = list(range(n))
+        pCur=0
+        #2.进入一个循环，模拟删除小朋友
+        #只要小朋友的个数还大于1，就继续
+        while len(array) > 1:
+            #3.计算出该出列的小朋友的位置
+            #[0,1,2,3,4] m=3 n=5
+            #[0,1,3,4]
+            #[2,3,4]
+            #[3]
+            #注意这里的括号里要有pCur+,否则每次都是重新开始了
+            pCur=(pCur+m-1)%len(array)
+            array.pop(pCur)
+        return array[0]
+```
+
+## 45.求1+2+3+...+n，要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。
+
+思路：&&短路功能
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def Sum_Solution(self, n):
+        # write code here
+        return (n and (n+self.Sum_Solution(n-1)))
+```
 
 ## ?.请实现一个函数用来找出字符流中第一个只出现一次的字符。例如，当从字符流中只读出前两个字符"go"时，第一个只出现一次的字符是"g"。当从该字符流中读出前六个字符“google"时，第一个只出现一次的字符是"l"。
 
