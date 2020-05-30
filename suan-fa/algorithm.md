@@ -1520,6 +1520,19 @@ class Solution:
         return []
 ```
 
+## 41.汇编语言中有一种移位指令叫做循环左移（ROL），现在有个简单的任务，就是用字符串模拟这个指令的运算结果。对于一个给定的字符序列S，请你把其循环左移K位后的序列输出。例如，字符序列S=”abcXYZdef”,要求输出循环左移3位后的结果，即“XYZdefabc”。是不是很简单？OK，搞定它！
+
+思路1：利用Python的一些特性
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def LeftRotateString(self, s, n):
+        return s[n:] + s[:n]
+```
+
+思路2：TBD
+
 ## 42.牛客最近来了一个新员工Fish，每天早晨总是会拿着一本英文杂志，写些句子在本子上。同事Cat对Fish写的内容颇感兴趣，有一天他向Fish借来翻看，但却读不懂它的意思。例如，“student. a am I”。后来才意识到，这家伙原来把句子单词的顺序翻转了，正确的句子应该是“I am a student.”。Cat对一一的翻转这些单词顺序可不在行，你能帮助他么？
 
 思路1：直接调用一些封装好的功能
@@ -1541,6 +1554,52 @@ class Solution:
 思路2：利用栈的特性，自己实现
 
 TBD
+
+## 43.LL今天心情特别好,因为他去买了一副扑克牌,发现里面居然有2个大王,2个小王\(一副牌原本是54张^\_^\)...他随机从中抽出了5张牌,想测测自己的手气,看看能不能抽到顺子,如果抽到的话,他决定去买体育彩票,嘿嘿！！“红心A,黑桃3,小王,大王,方片5”,“Oh My God!”不是顺子.....LL不高兴了,他想了想,决定大\小 王可以看成任何数字,并且A看作1,J为11,Q为12,K为13。上面的5张牌就可以变成“1,2,3,4,5”\(大小王分别看作2和4\),“So Lucky!”。LL决定去买体育彩票啦。 现在,要求你使用这幅牌模拟上面的过程,然后告诉我们LL的运气如何， 如果牌能组成顺子就输出true，否则就输出false。为了方便起见,你可以认为大小王是0。
+
+思路：按部就班地列出限制条件
+
+比如 
+
+1.如果是顺子，那么这组数的最大值与最小值的差值肯定小于5（由于大小王视为0，所以是小于\)
+
+2.数组的长度必为5
+
+3.数组必没有除了0之外的重复数字
+
+保证了这3 点，即可说明这个数组可构成顺子
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def IsContinuous(self, numbers):
+        # write code here
+        #1.长度必为5，否则False
+        if len(numbers) != 5:
+            return False
+        
+        #2.除了0之外没有重复的数字,并在这一次遍历中找到最大最小值
+        dic={}
+        miniVar = 14
+        maxVar = -1
+        for i in range(len(numbers)):
+            if dic.has_key(numbers[i]) and numbers[i] != 0:
+                return False
+            elif numbers[i] != 0:
+                dic[numbers[i]] = 1
+                if numbers[i] > maxVar:
+                    maxVar = numbers[i]
+                if numbers[i] < miniVar:
+                    miniVar = numbers[i]
+                    
+         #3.最大值－最小值必小于5
+        if maxVar - miniVar < 5:
+            return True
+        else:
+            return False
+```
+
+
 
 ## ?.请实现一个函数用来找出字符流中第一个只出现一次的字符。例如，当从字符流中只读出前两个字符"go"时，第一个只出现一次的字符是"g"。当从该字符流中读出前六个字符“google"时，第一个只出现一次的字符是"l"。
 
