@@ -1251,40 +1251,6 @@ class Solution:
         return -1
 ```
 
-## ?.在一个长度为n的数组里的所有数字都在0到n-1的范围内。 数组中某些数字是重复的，但不知道有几个数字是重复的。也不知道每个数字重复几次。请找出数组中任意一个重复的数字。 例如，如果输入长度为7的数组{2,3,1,0,2,5,3}，那么对应的输出是第一个重复的数字2。
-
-思路：空间换时间
-
-```python
-# -*- coding:utf-8 -*-
-class Solution:
-    # 这里要特别注意~找到任意重复的一个值并赋值到duplication[0]
-    # 函数返回True/False
-    def duplicate(self, numbers, duplication):
-        # write code here
-        #0.异常处理
-        if not numbers:
-            return False
-        
-        #1.空间换时间
-        dic = {}
-        
-        for i in range(len(numbers)):
-            if dic.has_key(numbers[i]):
-                dic[numbers[i]] += 1
-                if dic[numbers[i]] == 2:
-                    duplication[0] = numbers[i]
-                    return True
-                    
-            else:
-                dic[numbers[i]] = 1
-                
-        return False
-        
-```
-
-思路：不需要额外的数组或者hash table来保存，题目里写了数组里数字的范围保证在0 ~ n-1 之间，所以可以利用现有数组设置标志，当一个数字被访问过后，可以设置对应位上的数 + n，之后再遇到相同的数时，会发现对应位上的数已经大于等于n了，那么直接返回这个数即可。
-
 ## 35.统计一个数字在排序数组中出现的次数。
 
 思路：TopK问题，采用递归和循环实现的二分法分别来寻找第一次和最后一次出现的k值
@@ -1660,6 +1626,40 @@ class Solution:
         # write code here
         return (n and (n+self.Sum_Solution(n-1)))
 ```
+
+## ?.在一个长度为n的数组里的所有数字都在0到n-1的范围内。 数组中某些数字是重复的，但不知道有几个数字是重复的。也不知道每个数字重复几次。请找出数组中任意一个重复的数字。 例如，如果输入长度为7的数组{2,3,1,0,2,5,3}，那么对应的输出是第一个重复的数字2。
+
+思路：空间换时间
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    # 这里要特别注意~找到任意重复的一个值并赋值到duplication[0]
+    # 函数返回True/False
+    def duplicate(self, numbers, duplication):
+        # write code here
+        #0.异常处理
+        if not numbers:
+            return False
+        
+        #1.空间换时间
+        dic = {}
+        
+        for i in range(len(numbers)):
+            if dic.has_key(numbers[i]):
+                dic[numbers[i]] += 1
+                if dic[numbers[i]] == 2:
+                    duplication[0] = numbers[i]
+                    return True
+                    
+            else:
+                dic[numbers[i]] = 1
+                
+        return False
+        
+```
+
+思路：不需要额外的数组或者hash table来保存，题目里写了数组里数字的范围保证在0 ~ n-1 之间，所以可以利用现有数组设置标志，当一个数字被访问过后，可以设置对应位上的数 + n，之后再遇到相同的数时，会发现对应位上的数已经大于等于n了，那么直接返回这个数即可。
 
 ## ?.请实现一个函数用来找出字符流中第一个只出现一次的字符。例如，当从字符流中只读出前两个字符"go"时，第一个只出现一次的字符是"g"。当从该字符流中读出前六个字符“google"时，第一个只出现一次的字符是"l"。
 
