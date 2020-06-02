@@ -1776,5 +1776,59 @@ class Solution:
             self.searchMap[char] = 1
 ```
 
+## 53.给一个链表，若其中包含环，请找出该链表的环的入口结点，否则，输出null。
+
+思路：参考了别人的结论：  
+  
+`两个指针一个fast、一个slow同时从一个链表的头部出发，fast一次走2步，slow一次走一步，如果该链表有环，两个指针必然在环内相遇，此时只需要把其中的一个指针重新指向链表头部，另一个不变（还在环内），这次两个指针一次走一步，相遇的地方就是入口节点。`
+
+```python
+# -*- coding:utf-8 -*-
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def EntryNodeOfLoop(self, pHead):
+        # write code here
+        #0.异常处理
+        if not pHead or pHead.next == None:
+            return None
+        
+        #一个快指针，一个慢指针
+        pFast = pHead
+        pSlow = pHead
+        
+        #快的每次走两步，慢的每次走一步
+        pFast = pFast.next.next
+        pSlow = pSlow.next
+        while pSlow != pFast:
+            pFast = pFast.next.next
+            pSlow = pSlow.next
+            
+        #相遇了之后，一个留在圈内，一个回到原点，同时走一步
+        pFast = pHead
+        
+        while pSlow != pFast:
+            pFast = pFast.next
+            pSlow = pSlow.next
+        
+        return pSlow
+        
+        
+```
+
+## 55.给定一个二叉树和其中的一个结点，请找出中序遍历顺序的下一个结点并且返回。注意，树中的结点不仅包含左右子结点，同时包含指向父结点的指针。
+
+思路：这道题最好自己画一个树出来，分类讨论出可能的情况，做好判断即可
+
+（1） 若该节点存在右子树：则下一个节点为右子树最左子节点
+
+ （2） 若该节点不存在右子树：这时分两种情况：
+
+ 2.1 该节点为父节点的左子节点，则下一个节点为其父节点
+
+ 2.2 该节点为父节点的右子节点，则沿着父节点向上遍历，直到找到一个节点的父节点的左子节点为该节点，则该节点的父节点下一个节点
+
 
 
