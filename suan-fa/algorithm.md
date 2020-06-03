@@ -1814,8 +1814,46 @@ class Solution:
             pSlow = pSlow.next
         
         return pSlow
+```
+
+## 54.在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。 例如，链表1-&gt;2-&gt;3-&gt;3-&gt;4-&gt;4-&gt;5 处理后为 1-&gt;2-&gt;5
+
+思路：本题需要注意一个细节，重复的全部都要删掉，所以需要定义一个新的头结点，防止全部都要删掉，剩下的就是2个指针，一前一后，全部删除
+
+```python
+# -*- coding:utf-8 -*-
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def deleteDuplication(self, pHead):
+        # write code here
+        #0.异常处理
+        if not pHead or pHead.next == None:
+            return pHead
         
-        
+        #1.设置两个指针,由于重复的结点不保留，还需要定义一个新的结点
+        pNewHead = ListNode(0)
+        pNewHead.next = pHead
+        #new->1->2->3->3->4->4->5
+        p1 = pNewHead
+        p2 = pNewHead.next
+        #new->1->2->3->3->4->4->5
+        #    p1 p2
+        #2.p2走到尽头才跳出
+        while p2 != None:
+            #如果重复了，说明要删除了，往下找到第一个不一样的
+            if p2.next != None and p2.val == p2.next.val:
+                while p2.next != None and p2.val == p2.next.val:
+                    p2 = p2.next
+                p1.next = p2.next
+                p2 = p2.next
+            #P2作为哨兵指针，来探路，如果P2和P2的下一个都是不重复的，可以让P1走
+            else:
+                p1 = p1.next
+                p2 = p2.next
+        return pNewHead.next
 ```
 
 ## 55.给定一个二叉树和其中的一个结点，请找出中序遍历顺序的下一个结点并且返回。注意，树中的结点不仅包含左右子结点，同时包含指向父结点的指针。
