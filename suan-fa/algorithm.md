@@ -1744,7 +1744,47 @@ class Solution:
 
 思路：不需要额外的数组或者hash table来保存，题目里写了数组里数字的范围保证在0 ~ n-1 之间，所以可以利用现有数组设置标志，当一个数字被访问过后，可以设置对应位上的数 + n，之后再遇到相同的数时，会发现对应位上的数已经大于等于n了，那么直接返回这个数即可。
 
-## 49.
+## 49.给定一个数组A\[0,1,...,n-1\],请构建一个数组B\[0,1,...,n-1\],其中B中的元素B\[i\]=A\[0\]_A\[1\]_..._A\[i-1\]_A\[i+1\]_..._A\[n-1\]。不能使用除法。（注意：规定B\[0\] = A\[1\]  _A\[2\]_  ...  _A\[n-1\]，B\[n-1\] = A\[0\]_  A\[1\]  _..._  A\[n-2\];）
+
+思路：参考别人  
+  
+`解释下代码，设有数组大小为5。对于第一个for循环第一步：b[0] = 1;   第二步：b[1] = b[0] * a[0] = a[0]                          第三步：b[2] = b[1] * a[1] = a[0] * a[1];                       第四步：b[3] = b[2] * a[2] = a[0] * a[1] * a[2];            第五步：b[4] = b[3] * a[3] = a[0] * a[1] * a[2] * a[3];`  
+
+`然后对于第二个for循环`
+
+`第一步temp *= a[4] = a[4]; b[3] = b[3] * temp = a[0] * a[1] * a[2] * a[4];`
+
+`第二步temp *= a[3] = a[4] * a[3];b[2] = b[2] * temp = a[0] * a[1] * a[4] * a[3];`
+
+`第三步temp *= a[2] = a[4] * a[3] * a[2]; b[1] = b[1] * temp = a[0] * a[4] * a[3] * a[2];`
+
+`第四步temp *= a[1] = a[4] * a[3] * a[2] * a[1]; b[0] = b[0] * temp = a[4] * a[3] * a[2] * a[1];`
+
+`由此可以看出从b[4]到b[0]均已经得到正确计算。`
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def multiply(self, A):
+        # write code here
+        #0.异常处理
+        if not A:
+            return None
+        
+        result=[]
+        result.append(1)
+        
+        for i in range(len(A)-1):
+            result.append(result[i]*A[i])
+            
+        tmp=1
+        
+        for i in range(len(A)-1, -1, -1):
+            result[i] *= tmp
+            tmp *= A[i]
+            
+        return result
+```
 
 
 
@@ -1868,5 +1908,225 @@ class Solution:
 
  2.2 该节点为父节点的右子节点，则沿着父节点向上遍历，直到找到一个节点的父节点的左子节点为该节点，则该节点的父节点下一个节点
 
+```python
+# -*- coding:utf-8 -*-
+# class TreeLinkNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+#         self.next = None
+class Solution:
+    def GetNext(self, pNode):
+        # write code here
+        #0.异常处理
+        if not pNode:
+            return None
+        
+        #1.如果有右子树
+        if pNode.right != None:
+            #指向这个右子树
+            pNode = pNode.right
+            #然后找到最左子树
+            while pNode.left != None:
+                pNode = pNode.left
+            return pNode
+        #2.如果没有右子树
+        else:
+            #如果是根节点
+            if pNode.next == None:
+                return None
+            #如果是左叶子节点
+            elif pNode.next.left == pNode:
+                return pNode.next
+            #如果是右叶子节点
+            elif pNode.next.right == pNode:
+                #找到第一个是父节点左子节点的节点
+                while pNode.next != None:
+                    pNode = pNode.next
+                    #注意这里一定要判断pNode.next != None,否则可能会访问根节点的next.left,导致出错
+                    if pNode.next != None and pNode == pNode.next.left:
+                        return pNode.next
+                #全都找完了还没找到,那就是最后一个节点了
+                return None        
+```
 
+## 56.请实现一个函数，用来判断一颗二叉树是不是对称的。注意，如果一个二叉树同此二叉树的镜像是同样的，定义其为对称的。
+
+思路1：递归解决，比较清晰直观
+
+```python
+# -*- coding:utf-8 -*-
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    def isSymmetrical(self, pRoot):
+        # write code here
+        #0.异常处理
+        if not pRoot:
+            return True
+        
+        #1.递归完成比较
+        return self.myCmp(pRoot.left, pRoot.right)
+        
+    def myCmp(self, pRoot1, pRoot2):
+        #2.如果都已到了尽头
+        if not pRoot1 and not pRoot2:
+            return True
+        #3.只有其中一个到了尽头
+        if not pRoot1 or not pRoot2:
+            return False
+        #4.值相等，继续递归
+        if pRoot1.val == pRoot2.val:
+            return self.myCmp(pRoot1.left, pRoot2.right) and self.myCmp(pRoot1.right, pRoot2.left)
+
+```
+
+## 57.请实现一个函数按照之字形打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右至左的顺序打印，第三行按照从左到右的顺序打印，其他行以此类推。
+
+思路：前面有一道层序遍历二叉树的问题，稍微改一下，就是题解了
+
+```python
+# -*- coding:utf-8 -*-
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    def Print(self, pRoot):
+        # write code here
+        #0.异常处理
+        if not pRoot:
+            return []
+        
+        #1.层序遍历
+        result = []
+        oddNode = []
+        oddNode.append(pRoot)
+        evenNode = []
+        val = []
+        
+        while oddNode != [] or evenNode != []:
+            #奇数层，从前往后读
+            for i in range(len(oddNode)):
+                val.append(oddNode[i].val)
+            result.append(val)
+            val=[]
+            #整理出下一层的节点
+            while oddNode != []:
+                tmpNode = oddNode.pop(0)
+                if tmpNode.left:
+                    evenNode.append(tmpNode.left)
+                if tmpNode.right:
+                    evenNode.append(tmpNode.right)
+            #偶数层，从后往前读
+            if evenNode != []:
+                for i in range(len(evenNode)-1,-1,-1):
+                    val.append(evenNode[i].val)
+                result.append(val)
+                val=[]
+            #整理出下一层的节点
+            while evenNode != []:
+                tmpNode = evenNode.pop(0)
+                if tmpNode.left:
+                    oddNode.append(tmpNode.left)
+                if tmpNode.right:
+                    oddNode.append(tmpNode.right)
+        return result
+```
+
+## 58.从上到下按层打印二叉树，同一层结点从左至右输出。每一层输出一行。
+
+思路：改一下上道题的遍历书序顺序即可
+
+```python
+# -*- coding:utf-8 -*-
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    def Print(self, pRoot):
+        # write code here
+        #0.异常处理
+        if not pRoot:
+            return []
+        
+        #1.层序遍历
+        result = []
+        oddNode = []
+        oddNode.append(pRoot)
+        evenNode = []
+        val = []
+        
+        while oddNode != [] or evenNode != []:
+            #奇数层，从前往后读
+            for i in range(len(oddNode)):
+                val.append(oddNode[i].val)
+            result.append(val)
+            val=[]
+            #整理出下一层的节点
+            while oddNode != []:
+                tmpNode = oddNode.pop(0)
+                if tmpNode.left:
+                    evenNode.append(tmpNode.left)
+                if tmpNode.right:
+                    evenNode.append(tmpNode.right)
+            #偶数层，还是从前往后读
+            if evenNode != []:
+                for i in range(len(evenNode)):
+                    val.append(evenNode[i].val)
+                result.append(val)
+                val=[]
+            #整理出下一层的节点
+            while evenNode != []:
+                tmpNode = evenNode.pop(0)
+                if tmpNode.left:
+                    oddNode.append(tmpNode.left)
+                if tmpNode.right:
+                    oddNode.append(tmpNode.right)
+        return result
+```
+
+## 59.给定一棵二叉搜索树，请找出其中的第k小的结点。例如， （5，3，7，2，4，6，8） 中，按结点数值大小顺序第三小结点的值为4。
+
+思路：中序遍历即为排序好的结果
+
+```python
+# -*- coding:utf-8 -*-
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    # 返回对应节点TreeNode
+    def KthNode(self, pRoot, k):
+        # write code here
+        #0.异常处理
+        if not pRoot or not k:
+            return None
+        
+        #1.二叉搜索树的中序遍历，即为排好序的列表
+        self.result=[]
+        self.Tin(pRoot, k)
+        if len(self.result) < k:
+            return None
+        else:
+            return self.result[k-1]
+    
+    def Tin(self,pRoot, k):
+        if not pRoot or len(self.result) >= k:
+            return
+        
+        #中序，左根右
+        self.Tin(pRoot.left,k)
+        self.result.append(pRoot)
+        self.Tin(pRoot.right,k)
+```
 
