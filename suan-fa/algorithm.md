@@ -1436,6 +1436,36 @@ class Solution:
             self.MaxDeep(root.right, path+[root.right], result)
 ```
 
+## 38.一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字。
+
+思路1：老办法，利用字典空间换时间
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    # 返回[a,b] 其中ab是出现一次的两个数字
+    def FindNumsAppearOnce(self, array):
+        # write code here
+        #字典，空间换时间
+        #0.异常处理
+        if not array:
+            return []
+        
+        #1.遍历 O(n)
+        mydic={}
+        for i in array:
+            if mydic.has_key(i):
+                mydic[i] += 1 
+            else:
+                mydic[i] =1
+        result=[]
+        for j in mydic.keys():
+            if mydic[j] == 1:
+                result.append(j)
+        
+        return result
+```
+
 ## 39.小明很喜欢数学,有一天他在做数学作业时,要求计算出9~16的和,他马上就写出了正确答案是100。但是他并不满足于此,他在想究竟有多少种连续的正数序列的和为100\(至少包括两个数\)。没多久,他就得到另一组连续正数和为100的序列:18,19,20,21,22。现在把问题交给你,你能不能也很快的找出所有和为S的连续正数序列? Good Luck!
 
 思路：参考讨论区的双指针滑动窗口方法
