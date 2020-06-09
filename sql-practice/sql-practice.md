@@ -115,3 +115,31 @@ from employees as e, dept_emp as d
 where e.emp_no = d.emp_no;
 ```
 
+## 5.查找所有员工的last\_name和first\_name以及对应部门编号dept\_no，也包括暂时没有分配具体部门的员工\(请注意输出描述里各个列的前后顺序\)
+
+```sql
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+```
+
+思路：这题与上一题的唯一区别在于，需要显示左表格中一些不在右表格的数据，因此这就需要用到左联右联了
+
+```sql
+select e.last_name, e.first_name, d.dept_no
+from employees e
+left join dept_emp d
+on e.emp_no = d.emp_no;
+```
+
