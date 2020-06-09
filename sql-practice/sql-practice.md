@@ -143,3 +143,59 @@ left join dept_emp d
 on e.emp_no = d.emp_no;
 ```
 
+## 6.查找所有员工入职时候的薪水情况，给出emp\_no以及salary， 并按照emp\_no进行逆序\(请注意，一个员工可能有多次涨薪的情况\)
+
+```sql
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路：自己写的时候忘记了一个限制条件
+
+```sql
+e.emp_no = s.emp_no
+```
+
+这里要加上这个条件的原因在于：  
+  
+由于测试数据中，salaries.emp\_no 不唯一（因为号码为 emp\_no 的员\*\*\*有多次涨薪的可能，所以在 salaries 中对应的记录不止一条），employees.emp\_no 唯一，即 salaries 的数据会多于 employees，因此需先找到 employees.emp\_no 在 salaries 表中对应的记录salaries.emp\_no，则有限制条件 e.emp\_no = s.emp\_no
+
+```sql
+select e.emp_no, s.salary
+from employees as e, salaries as s
+where e.hire_date = s.from_date and e.emp_no = s.emp_no
+order by e.emp_no desc;
+```
+
+## 7.查找薪水变动超过15次的员工号emp\_no以及其对应的变动次数t
+
+```sql
+CREATE TABLE `salaries` (
+ `emp_no` int(11) NOT NULL,
+ `salary` int(11) NOT NULL,
+ `from_date` date NOT NULL,
+ `to_date` date NOT NULL,
+ PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路：这里参考了别人的答案  
+  
+此题应注意以下四点： 1、用COUNT\(\)函数和GROUP BY语句可以统计同一emp\_no值的记录条数 2、根据题意，输出的涨幅次数为t，故用AS语句将COUNT\(emp\_no\)的值转换为t 3、由于COUNT\(\)函数不可用于WHERE语句中，故使用HAVING语句来限定t&gt;15的条件 4、最后存在一个理解误区，涨幅超过15次，salaries中相应的记录数应该超过16（从第2条记录开始算作第1次涨幅），不过题目为了简单起见，将第1条记录当作第1次涨幅，所以令t&gt;15即可 _/\*\*  注意：_ _严格来说，下一条salary高于本条才算涨幅，但本题只要出现了一条记录就算一次涨幅，salary相同可以理解为涨幅为0，salary变少理解为涨幅为负 \*\*/_
+
+```sql
+SELECT emp_no, COUNT(emp_no) AS t FROM salaries
+group by emp_no having t > 15;
+```
+
