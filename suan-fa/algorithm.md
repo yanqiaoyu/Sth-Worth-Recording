@@ -116,11 +116,6 @@ class Solution:
             s.append(listNode.val)
             listNode = listNode.next
         return s[::-1]
-        
-class Solution:
-    # 返回从尾部到头部的列表值序列，例如[1,2,3]
-    def printListFromTailToHead(self, listNode):
-        
 ```
 
 ```python
