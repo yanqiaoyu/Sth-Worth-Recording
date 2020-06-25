@@ -2220,3 +2220,47 @@ class Solution:
         return root
 ```
 
+## 65.请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。路径可以从矩阵中的任意一格开始，每一步可以在矩阵中向左、右、上、下移动一格。如果一条路径经过了矩阵的某一格，那么该路径不能再次进入该格子。例如，在下面的3×4的矩阵中包含一条字符串“bfce”的路径（路径中的字母用加粗标出）。\[\["a","b","c","e"\], \["s","f","c","s"\], \["a","d","e","e"\]\] 但矩阵中不包含字符串“abfb”的路径，因为字符串的第一个字符b占据了矩阵中的第一行第二个格子之后，路径不能再次进入这个格子。
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def hasPath(self, matrix, path):
+        # write code here
+        #0.异常处理
+        if not matrix:
+            return False
+        if not path:
+            return True
+        
+        def dfs(i, j, k):
+            #3.如果路径越界，或者当前的字母不符合路径，返回False
+            if not 0<= i < len(matrix[0]) or not 0<= j < len(matrix) or matrix[i][j] != path[k]:
+                return False
+            
+            #4.执行到了这里
+            if k == len(path)-1:
+                return True
+            
+            #保存当前字母，继续DFS
+            tmp , matrix[i][j] = matrix[i][j], '/'
+            
+            res = dfs(i+1, j, k+1) or dfs(i, j+1, k+1) or dfs(i-1, j, k+1) or dfs(i, j-1, k+1)
+            
+            #5.如果执行到了这里，说明递归返回了，我们还原上面的tmp到矩阵里面
+            matrix[i][j] = tmp
+            
+            return res
+        
+        #1.定义两个循环,遍历这个二维数组
+        for i in range(len(matrix)):
+            for j in range(len(matrix[0])):
+                #2.DFS
+                if dfs(i, j, 0):
+                    return True
+        return False            
+                
+```
+
+
+
