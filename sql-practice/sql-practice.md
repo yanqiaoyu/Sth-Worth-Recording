@@ -190,7 +190,15 @@ CREATE TABLE `salaries` (
 
 思路：这里参考了别人的答案  
   
-此题应注意以下四点： 1、用COUNT\(\)函数和GROUP BY语句可以统计同一emp\_no值的记录条数 2、根据题意，输出的涨幅次数为t，故用AS语句将COUNT\(emp\_no\)的值转换为t 3、由于COUNT\(\)函数不可用于WHERE语句中，故使用HAVING语句来限定t&gt;15的条件 4、最后存在一个理解误区，涨幅超过15次，salaries中相应的记录数应该超过16（从第2条记录开始算作第1次涨幅），不过题目为了简单起见，将第1条记录当作第1次涨幅，所以令t&gt;15即可 _/\*\*  注意：_ _严格来说，下一条salary高于本条才算涨幅，但本题只要出现了一条记录就算一次涨幅，salary相同可以理解为涨幅为0，salary变少理解为涨幅为负 \*\*/_
+此题应注意以下四点： 
+
+1、用COUNT\(\)函数和GROUP BY语句可以统计同一emp\_no值的记录条数
+
+ 2、根据题意，输出的涨幅次数为t，故用AS语句将COUNT\(emp\_no\)的值转换为t 
+
+3、由于COUNT\(\)函数不可用于WHERE语句中，故使用HAVING语句来限定t&gt;15的条件 
+
+4、最后存在一个理解误区，涨幅超过15次，salaries中相应的记录数应该超过16（从第2条记录开始算作第1次涨幅），不过题目为了简单起见，将第1条记录当作第1次涨幅，所以令t&gt;15即可 _/\*\*  注意：_ _严格来说，下一条salary高于本条才算涨幅，但本题只要出现了一条记录就算一次涨幅，salary相同可以理解为涨幅为0，salary变少理解为涨幅为负 \*\*/_
 
 ```sql
 SELECT emp_no, COUNT(emp_no) AS t FROM salaries
@@ -711,5 +719,124 @@ CREATE TABLE `salaries` (
 PRIMARY KEY (`emp_no`,`from_date`));
 ```
 
-思路
+思路:参考了牛客网的思路  
+本题的主要思想是**复用salaries表进行比较排名**，具体思路如下： 
+
+1、从两张相同的salaries表（分别为s1与s2）进行对比分析，先将两表限定条件设为to\_date = '9999-01-01'，挑选出当前所有员工的薪水情况。
+
+ 2、本题的精髓在于 **s1.salary &lt;= s2.salary，意思是在输出s1.salary的情况下，有多少个s2.salary大于等于s1.salary**，比如当s1.salary=94409时，有3个s2.salary（分别为94692,94409,94409）大于等于它，但由于94409重复，利用COUNT\(DISTINCT s2.salary\)去重可得工资为94409的rank等于2。其余排名以此类推。 
+
+3、千万不要忘了GROUP BY s1.emp\_no，否则输出的记录只有一条（可能是第一条或者最后一条，根据不同的数据库而定），因为用了合计函数COUNT\(\)
+
+4、最后先以 s1.salary 逆序排列，再以 s1.emp\_no 顺序排列输出结果
+
+```sql
+select s1.emp_no, s1.salary, count(distinct s2.salary) as rank
+from 
+salaries as s1,
+salaries as s2
+where s1.to_date = '9999-01-01' 
+and s2.to_date = '9999-01-01'
+and s1.salary <= s2.salary
+group by s1.emp_no
+order by  s1.salary desc,s1.emp_no asc;
+```
+
+## Done 24.获取所有非manager员工当前的薪水情况，给出dept\_no、emp\_no以及salary ，当前表示to\_date='9999-01-01'
+
+```sql
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+CREATE TABLE `dept_manager` (
+`dept_no` char(4) NOT NULL,
+`emp_no` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路:按部就班即可
+
+```sql
+select de.dept_no, de.emp_no, s.salary
+from 
+(
+    dept_emp as de 
+    inner join 
+    salaries as s 
+    on de.emp_no = s.emp_no
+)
+where s.to_date = '9999-01-01'
+and de.emp_no not in 
+(select emp_no from dept_manager 
+where to_date = '9999-01-01');
+```
+
+## Important 25.获取员工其当前的薪水比其manager当前薪水还高的相关信息，当前表示to\_date='9999-01-01', 结果第一列给出员工的emp\_no， 第二列给出其manager的manager\_no， 第三列给出该员工当前的薪水emp\_salary, 第四列给该员工对应的manager当前的薪水manager\_salary
+
+```sql
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+CREATE TABLE `dept_manager` (
+`dept_no` char(4) NOT NULL,
+`emp_no` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路：其实跟前几题的自连接查询略像
+
+```sql
+select se.emp_no, 
+sm.emp_no as manager_no, 
+se.salary as emp_salary, 
+sm.salary as manager_salary
+from 
+(
+    dept_emp as de 
+    inner join 
+    salaries as s1
+    on de.emp_no = s1.emp_no
+    and s1.to_date = '9999-01-01'
+) as se,
+(
+    dept_manager as dm
+    inner join 
+    salaries as s2
+    on dm.emp_no = s2.emp_no
+    and s2.to_date = '9999-01-01'
+) as sm
+where sm.dept_no = se.dept_no
+and sm.salary < se.salary;
+
+```
 
