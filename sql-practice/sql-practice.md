@@ -577,3 +577,22 @@ left join
 on e.emp_no = dp.emp_no;
 ```
 
+## Done 20.查找员工编号emp\_no为10001其自入职以来的薪水salary涨幅\(总共涨了多少\)growth\(可能有多次涨薪，没有降薪\)
+
+```sql
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路：薪水涨幅就是最高减最低
+
+```sql
+select (max(salary)-min(salary)) as growth
+from salaries
+where emp_no = 10001;
+```
+
