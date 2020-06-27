@@ -588,11 +588,77 @@ CREATE TABLE `salaries` (
 PRIMARY KEY (`emp_no`,`from_date`));
 ```
 
-思路：薪水涨幅就是最高减最低
+思路：
+
+1.第一种最高减最低不太严谨
+
+2.第二种按照了时间来找，防止出现中间存在降薪的问题
 
 ```sql
 select (max(salary)-min(salary)) as growth
 from salaries
 where emp_no = 10001;
+
+
+SELECT 
+    ( 
+        (SELECT salary FROM salaries 
+        WHERE emp_no = 10001 
+        ORDER BY to_date DESC LIMIT 1) 
+        -
+        (SELECT salary FROM salaries 
+        WHERE emp_no = 10001 
+        ORDER BY to_date ASC LIMIT 1)
+    ) 
+AS growth
+```
+
+## Important 21.查找所有员工自入职以来的薪水涨幅情况，给出员工编号emp\_no以及其对应的薪水涨幅growth，并按照growth进行升序 （注:可能有employees表和salaries表里存在记录的员工，有对应的员工编号和涨薪记录，但是已经离职了，离职的员工salaries表的最新的to\_date!='9999-01-01'，这样的数据不显示在查找结果里面）
+
+```sql
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL, --  '入职时间'
+PRIMARY KEY (`emp_no`));
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL, --  '一条薪水记录开始时间'
+`to_date` date NOT NULL, --  '一条薪水记录结束时间'
+PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路:这题比上一题有意思一点，面向的是所有员工，这种时候应该怎么办呢？  
+  
+本题思路是先分别用两次LEFT JOIN左连接employees与salaries，建立两张表，分别存放员工当前工资（sCurrent）与员工入职时的工资（sStart），再用INNER JOIN连接sCurrent与sStart，最后限定在同一员工下用当前工资减去入职工资。
+
+```sql
+select CurrentSalary.emp_no, (CurrentSalary.salary - FirstSalary.salary) as growth
+from 
+    (
+        select s.salary, e.emp_no
+        from
+        employees as e 
+        inner join
+        salaries as s 
+        on s.emp_no = e.emp_no
+        where s.to_date = '9999-01-01'
+    ) as CurrentSalary
+inner join 
+    (
+        select s.salary, e.emp_no
+        from
+        employees as e 
+        inner join
+        salaries as s 
+        on s.emp_no = e.emp_no
+        where s.from_date = e.hire_date
+    ) as FirstSalary
+on CurrentSalary.emp_no = FirstSalary.emp_no
+order by growth;
 ```
 
