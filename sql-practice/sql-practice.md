@@ -662,3 +662,54 @@ on CurrentSalary.emp_no = FirstSalary.emp_no
 order by growth;
 ```
 
+## Done 22.统计各个部门的工资记录数，给出部门编码dept\_no、部门名称dept\_name以及部门在salaries表里面有多少条记录sum
+
+```sql
+CREATE TABLE `departments` (
+`dept_no` char(4) NOT NULL,
+`dept_name` varchar(40) NOT NULL,
+PRIMARY KEY (`dept_no`));
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路：3表联合查询，仍然是注意联合的方法
+
+```sql
+select d.dept_no, d.dept_name, count(s.salary) as sum
+from 
+    (
+        departments as dep 
+        inner join
+        dept_emp as dp 
+        on dep.dept_no = dp.dept_no
+    ) as d 
+inner join
+salaries as s 
+on d.emp_no = s.emp_no
+group by d.dept_no;
+```
+
+## Important 23.对所有员工的当前\(to\_date='9999-01-01'\)薪水按照salary进行按照1-N的排名，相同salary并列且按照emp\_no升序排列
+
+```sql
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路
+
