@@ -285,5 +285,295 @@ from employees
 where emp_no not in (select emp_no from dept_manager);
 ```
 
+## Important 11.获取所有员工当前的\(dept\_manager.to\_date='9999-01-01'\)manager，如果员工是manager的话不显示\(也就是如果当前的manager是自己的话结果不显示\)。输出结果第一列给出当前员工的emp\_no,第二列给出其manager对应的emp\_no。
 
+```sql
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL, -- '所有的员工编号'
+`dept_no` char(4) NOT NULL, -- '部门编号'
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+CREATE TABLE `dept_manager` (
+`dept_no` char(4) NOT NULL, -- '部门编号'
+`emp_no` int(11) NOT NULL, -- '经理编号'
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+
+```
+
+思路：这里最大的问题在于，我们要找的共性是什么？用什么来连接这两张表？
+
+```sql
+select de.emp_no, dm.emp_no as manager_no
+from dept_emp as de, dept_manager as dm
+where de.to_date = '9999-01-01'
+and dm.to_date = '9999-01-01'
+and de.emp_no not in (select emp_no from dept_manager)
+and de.dept_no = dm.dept_no;
+```
+
+## Notice 12.获取所有部门中当前\(dept\_emp.to\_date = '9999-01-01'\)员工当前\(salaries.to\_date='9999-01-01'\)薪水最高的相关信息，给出dept\_no, emp\_no以及其对应的salary
+
+```sql
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路:这题其实有问题，使用group by子句时，select子句中只能有聚合键、聚合函数、常数。 emp\_no并不符合这个要求。
+
+```sql
+select de.dept_no, de.emp_no, s.salary
+from dept_emp de inner join salaries s
+on de.emp_no = s.emp_no
+and de.to_date = '9999-01-01'
+and s.to_date = '9999-01-01'
+where s.salary = 
+    (
+        select max(s2.salary)
+        from dept_emp de2 inner join salaries s2
+        on de2.emp_no = s2.emp_no
+        and de2.to_date = '9999-01-01'
+        and s2.to_date = '9999-01-01'
+        where de2.dept_no = de.dept_no
+        group by de2.dept_no
+    )
+order by de.dept_no;
+```
+
+## Important 13.从titles表获取按照title进行分组，每组个数大于等于2，给出title以及对应的数目t。
+
+```sql
+CREATE TABLE IF NOT EXISTS "titles" (
+`emp_no` int(11) NOT NULL,
+`title` varchar(50) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date DEFAULT NULL);
+```
+
+思路:看到了分组，自然而然的要想到group by  
+  
+1、用COUNT\(\)函数和GROUP BY语句可以统计同一title值的记录条数
+
+ 2、根据题意，输出每个title的个数为t，故用AS语句将COUNT\(title\)的值转换为t 
+
+3、由于WHERE后不可跟COUNT\(\)函数，故用HAVING语句来限定t&gt;=2的条件
+
+```sql
+select title, count(title) as t 
+from titles
+group by title having t >= 2;
+```
+
+## Done 14.从titles表获取按照title进行分组，每组个数大于等于2，给出title以及对应的数目t。 注意对于重复的emp\_no进行忽略\(即emp\_no重复的title不计算，title对应的数目t不增加\)。
+
+```sql
+CREATE TABLE IF NOT EXISTS `titles` (
+`emp_no` int(11) NOT NULL,
+`title` varchar(50) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date DEFAULT NULL);
+```
+
+思路：与前面一题类似，但是需要去重，下面给出了两种解决办法
+
+```sql
+select title, count(title) as t 
+from 
+    (
+        select distinct emp_no, * 
+        from titles
+    )
+group by title having t >= 2;
+
+SELECT title, COUNT(DISTINCT emp_no) AS t FROM titles
+GROUP BY title HAVING t >= 2
+```
+
+## Notice 15.查找employees表所有emp\_no为奇数，且last\_name不为Mary\(注意大小写\)的员工信息，并按照hire\_date逆序排列\(题目不能使用mod函数\)
+
+```sql
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+```
+
+思路：这题还是挺有意思的
+
+主要问题：奇数怎么处理
+
+```sql
+select emp_no, birth_date, first_name, last_name, gender, hire_date
+from employees
+where emp_no % 2 = 1
+and last_name != 'Mary'
+order by hire_date desc;
+```
+
+## Done 16.统计出当前\(titles.to\_date='9999-01-01'\)各个title类型对应的员工当前\(salaries.to\_date='9999-01-01'\)薪水对应的平均工资。结果给出title以及平均工资avg。
+
+```sql
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+CREATE TABLE IF NOT EXISTS "titles" (
+`emp_no` int(11) NOT NULL,
+`title` varchar(50) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date DEFAULT NULL);
+```
+
+思路：按部就班即可
+
+```sql
+select t.title, avg(s.salary) as avg
+from 
+salaries as s 
+inner join 
+titles as t 
+on s.emp_no = t.emp_no
+where t.to_date = '9999-01-01'
+and s.to_date = '9999-01-01'
+group by t.title;
+```
+
+## Notice 17.获取当前（to\_date='9999-01-01'）薪水第二多的员工的emp\_no以及其对应的薪水salary
+
+```sql
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路：这里注意 distinct 与 limit的用法即可
+
+```sql
+select emp_no, salary
+from salaries
+where to_date = '9999-01-01'
+and salary = 
+    (
+        select distinct salary 
+        from salaries
+        order by salary desc limit 1,1
+    );
+```
+
+## Important 18.查找当前薪水\(to\_date='9999-01-01'\)排名第二多的员工编号emp\_no、薪水salary、last\_name以及first\_name，你可以不使用order by完成吗
+
+```sql
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路：
+
+1.不使用order by，那么就排除Max
+
+2.第二种方法参考了牛客网的答案，两个相同表的自连接，可以求任意高的工资
+
+```sql
+select e.emp_no, s.salary, e.last_name, e.first_name
+from employees as e 
+inner join 
+salaries as s 
+on e.emp_no = s.emp_no
+where s.salary !=(
+                    select max(salary)
+                    from salaries
+                  )
+order by s.salary desc limit 0,1;
+
+
+第二种 通用型可以求任意第几高，并且可以求多个形同工资
+select e.emp_no,s.salary,e.last_name,e.first_name
+from
+employees e
+join 
+salaries s on e.emp_no=s.emp_no 
+and  s.to_date='9999-01-01'
+and s.salary = 
+(
+     select s1.salary
+     from 
+     salaries s1
+     join
+     salaries s2 on s1.salary<=s2.salary 
+     and s1.to_date='9999-01-01' and s2.to_date='9999-01-01'
+     group by s1.salary
+     having count(distinct s2.salary)=2
+ )
+```
+
+## Notice 19.查找所有员工的last\_name和first\_name以及对应的dept\_name，也包括暂时没有分配部门的员工
+
+```sql
+CREATE TABLE `departments` (
+`dept_no` char(4) NOT NULL,
+`dept_name` varchar(40) NOT NULL,
+PRIMARY KEY (`dept_no`));
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+```
+
+思路：本题主要需要弄清楚的地方在于3个表的联合查询，并且第一张表与第三张表没有可以联合的字段的时候如何查询
+
+```sql
+select e.last_name, e.first_name, dp.dept_name
+from employees as e 
+left join 
+    (
+        dept_emp as de 
+        inner join
+        departments as dp1
+        on de.dept_no = dp1.dept_no
+    ) as dp
+on e.emp_no = dp.emp_no;
+```
 
