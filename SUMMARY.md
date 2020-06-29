@@ -17,3 +17,7 @@
 
 * [路由器Web压力测试](jmeter/lu-you-qi-web-ya-li-ce-shi.md)
 
+## Selenium
+
+* [Selenium+pynput完成自动化web页面升级路由器](selenium/selenium+pynput-wan-cheng-zi-dong-hua-web-ye-mian-sheng-ji-lu-you-qi.md)
+
