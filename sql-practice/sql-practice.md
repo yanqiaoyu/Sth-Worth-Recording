@@ -1235,3 +1235,374 @@ alter table actor
 add column `create_date` datetime not null default '0000-00-00 00:00:00';
 ```
 
+## IMPORTANT 41.构造一个触发器audit\_log，在向employees\_test表中插入一条数据的时候，触发插入相关的数据到audit中。
+
+```sql
+CREATE TABLE employees_test(
+ID INT PRIMARY KEY NOT NULL,
+NAME TEXT NOT NULL,
+AGE INT NOT NULL,
+ADDRESS CHAR(50),
+SALARY REAL
+);
+CREATE TABLE audit(
+EMP_no INT NOT NULL,
+NAME TEXT NOT NULL
+);
+```
+
+思路：基本语法
+
+```sql
+CREATE TRIGGER audit_log AFTER INSERT ON employees_test
+BEGIN
+    INSERT INTO audit VALUES (NEW.ID, NEW.NAME);
+END;
+```
+
+## IMPORTANT 42. 删除emp\_no重复的记录，只保留最小的id对应的记录。
+
+```sql
+CREATE TABLE IF NOT EXISTS titles_test (
+id int(11) not null primary key,
+emp_no int(11) NOT NULL,
+title varchar(50) NOT NULL,
+from_date date NOT NULL,
+to_date date DEFAULT NULL);
+
+insert into titles_test values ('1', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
+('2', '10002', 'Staff', '1996-08-03', '9999-01-01'),
+('3', '10003', 'Senior Engineer', '1995-12-03', '9999-01-01'),
+('4', '10004', 'Senior Engineer', '1995-12-03', '9999-01-01'),
+('5', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
+('6', '10002', 'Staff', '1996-08-03', '9999-01-01'),
+('7', '10003', 'Senior Engineer', '1995-12-03', '9999-01-01');
+```
+
+思路：基本语法，注意要对emp\_no分组，然后找出这个分组里面ID最小的
+
+```sql
+delete from titles_test 
+where id not in 
+(select min(id) from titles_test
+group by emp_no)
+```
+
+## IMPORTANT 43.将所有to\_date为9999-01-01的全部更新为NULL,且 from\_date更新为2001-01-01。
+
+```sql
+CREATE TABLE IF NOT EXISTS titles_test (
+id int(11) not null primary key,
+emp_no int(11) NOT NULL,
+title varchar(50) NOT NULL,
+from_date date NOT NULL,
+to_date date DEFAULT NULL);
+```
+
+思路:基本语法
+
+```sql
+update  titles_test set to_date=null, from_date="2001-01-01"
+where to_date='9999-01-01'
+```
+
+## Note 44. 将id=5以及emp\_no=10001的行数据替换成id=5以及emp\_no=10005,其他数据保持不变，使用replace实现。
+
+```sql
+CREATE TABLE IF NOT EXISTS titles_test (
+id int(11) not null primary key,
+emp_no int(11) NOT NULL,
+title varchar(50) NOT NULL,
+from_date date NOT NULL,
+to_date date DEFAULT NULL);
+
+insert into titles_test values ('1', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
+('2', '10002', 'Staff', '1996-08-03', '9999-01-01'),
+('3', '10003', 'Senior Engineer', '1995-12-03', '9999-01-01'),
+('4', '10004', 'Senior Engineer', '1995-12-03', '9999-01-01'),
+('5', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
+('6', '10002', 'Staff', '1996-08-03', '9999-01-01'),
+('7', '10003', 'Senior Engineer', '1995-12-03', '9999-01-01');
+```
+
+思路：基本语法
+
+```sql
+UPDATE titles_test SET emp_no = REPLACE(emp_no,10001,10005) WHERE id = 5
+```
+
+## Note 45.将titles\_test表名修改为titles\_2017。
+
+```sql
+CREATE TABLE IF NOT EXISTS titles_test (
+id int(11) not null primary key,
+emp_no int(11) NOT NULL,
+title varchar(50) NOT NULL,
+from_date date NOT NULL,
+to_date date DEFAULT NULL);
+
+insert into titles_test values ('1', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
+('2', '10002', 'Staff', '1996-08-03', '9999-01-01'),
+('3', '10003', 'Senior Engineer', '1995-12-03', '9999-01-01'),
+('4', '10004', 'Senior Engineer', '1995-12-03', '9999-01-01'),
+('5', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
+('6', '10002', 'Staff', '1996-08-03', '9999-01-01'),
+('7', '10003', 'Senior Engineer', '1995-12-03', '9999-01-01');
+```
+
+思路:基本语法
+
+```sql
+alter table titles_test rename to titles_2017;
+```
+
+## 46.在audit表上创建外键约束，其emp\_no对应employees\_test表的主键id。\(audit已经创建，需要先drop\)
+
+```sql
+CREATE TABLE employees_test(
+ID INT PRIMARY KEY NOT NULL,
+NAME TEXT NOT NULL,
+AGE INT NOT NULL,
+ADDRESS CHAR(50),
+SALARY REAL
+);
+
+CREATE TABLE audit(
+EMP_no INT NOT NULL,
+create_date datetime NOT NULL
+);
+(注：创建表的时候，字段的顺序不要改变)
+```
+
+思路：基本语法
+
+```sql
+DROP TABLE audit;
+CREATE TABLE audit(
+    EMP_no INT NOT NULL,
+    create_date datetime NOT NULL,
+    FOREIGN KEY(EMP_no) REFERENCES employees_test(ID));
+```
+
+## 47.存在如下的视图： create view emp\_v as select \* from employees where emp\_no &gt;10005; 如何获取emp\_v和employees有相同的数据？
+
+```sql
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+(你能不用 select * from employees where emp_no >10005完成吗，挑战一下自己对视图的理解吧)
+```
+
+由于视图 emp\_v 的记录是从 employees 中导出的，所以要判断两者中相等的数据，只需要判断emp\_no相等即可。 方法一：用 WHERE 选取二者 emp\_no 相等的记录 SELECT em.\* FROM employees AS em, emp\_v AS ev WHERE em.emp\_no = ev.emp\_no
+
+方法二：用 INTERSECT 关键字求 employees 和 emp\_v 的交集 SELECT  _FROM employees INTERSECT SELECT_  FROM emp\_v
+
+方法三：仔细一想，emp\_v的全部记录均由 employees 导出，直接输出 emp\_v 所有记录 SELECT \* FROM emp\_v
+
+```sql
+1.SELECT em.* FROM employees AS em, emp_v AS ev WHERE em.emp_no = ev.emp_no
+
+2.SELECT  FROM employees INTERSECT SELECT  FROM emp_v
+
+3.SELECT * FROM emp_v
+```
+
+## 48.请你写出更新语句，将所有获取奖金的员工当前的\(salaries.to\_date='9999-01-01'\)薪水增加10%。\(emp\_bonus里面的emp\_no都是当前获奖的所有员工\)
+
+```sql
+create table emp_bonus(
+emp_no int not null,
+btype smallint not null);
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL, PRIMARY KEY (`emp_no`,`from_date`));
+如：
+INSERT INTO emp_bonus VALUES (10001,1);
+INSERT INTO salaries VALUES(10001,85097,'2001-06-22','2002-06-22');
+INSERT INTO salaries VALUES(10001,88958,'2002-06-22','9999-01-01');
+```
+
+思路：基本语法
+
+```sql
+update salaries set salary = salary*1.1
+where emp_no in 
+(select emp_no from emp_bonus)
+and to_date='9999-01-01';
+```
+
+## 49.针对库中的所有表生成select count\(\*\)对应的SQL语句，如数据库里有以下表， \(注:在 SQLite 中用 “\|\|” 符号连接字符串，无法使用concat函数\)
+
+```sql
+employees
+departments
+dept_emp
+dept_manage
+salaries
+titles
+emp_bonus
+那么就会输出以下的样子:
+cnts
+select count(*) from employees;
+select count(*) from departments;
+select count(*) from dept_emp;
+select count(*) from dept_manager;
+select count(*) from salaries;
+select count(*) from titles;
+select count(*) from emp_bonus;
+```
+
+思路：按部就班
+
+```sql
+SELECT "select count(*) from " || name || ";" AS cnts
+FROM sqlite_master WHERE type = 'table'
+```
+
+## 50.将employees表中的所有员工的last\_name和first\_name通过\('\)连接起来。\(不支持concat，请用\|\|实现\)
+
+```sql
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+```
+
+思路:sqlite与mysql方式不一致，这个问题前面出现过
+
+```sql
+select last_name||"'"||first_name from employees
+
+select concat(last_name,"'",first_name) as name 
+```
+
+## 51.查找字符串'10,A,B' 中逗号','出现的次数cnt。
+
+思路：
+
+由于 SQLite 中没有直接统计字符串中子串出现次数的函数，因此本题用length\(\)函数与replace\(\)函数的结合灵活地解决了统计子串出现次数的问题，属于技巧题，即先用replace函数将原串中出现的子串用空串替换，再用原串长度减去替换后字符串的长度，最后除以子串的长度（本题中此步可省略，若子串长度大于1则不可省）。详情请参考： [http://www.cnblogs.com/huangtailang/p/5cfbd242cae2bcc929c81c266d0c875b.html](http://www.cnblogs.com/huangtailang/p/5cfbd242cae2bcc929c81c266d0c875b.html) [http://sqlite.org/lang\_corefunc.html\#replace](http://sqlite.org/lang_corefunc.html#replace)
+
+```sql
+select ( length('10,A,B') - length( replace('10,A,B', ",", "") )) as cnt;
+```
+
+## 52.获取Employees中的first\_name，查询按照first\_name最后两个字母，按照升序进行排列
+
+```sql
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+```
+
+思路：了解substr的用法
+
+```sql
+SELECT first_name FROM employees ORDER BY substr(first_name,length(first_name)-1)
+```
+
+## 53.按照dept\_no进行汇总，属于同一个部门的emp\_no按照逗号进行连接，结果给出dept\_no以及连接出的结果employees
+
+```sql
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+```
+
+思路：group\_concat这个函数的使用
+
+```sql
+SELECT dept_no, group_concat(emp_no) AS employees
+FROM dept_emp GROUP BY dept_no
+```
+
+## IMPORTANT 54.查找排除最大、最小salary之后的当前\(to\_date = '9999-01-01' \)员工的平均工资avg\_salary。
+
+```sql
+CREATE TABLE `salaries` ( `emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路：一开始我的思路是错的，where后面的子查询里面不能出现聚合函数，min sum max这种
+
+```sql
+SELECT AVG(salary) AS avg_salary FROM salaries 
+WHERE to_date = '9999-01-01' 
+AND salary NOT IN (SELECT MAX(salary) FROM salaries WHERE to_date = '9999-01-01')
+AND salary NOT IN (SELECT MIN(salary) FROM salaries WHERE to_date = '9999-01-01')
+```
+
+## 55.分页查询employees表，每5行一页，返回第2页的数据
+
+思路：要么直接利用 limit，要么用limit + offset
+
+```sql
+select * from employees 
+limit 5,5
+
+	
+SELECT * FROM employees LIMIT 5 OFFSET 5
+```
+
+## Done 56.获取所有员工的emp\_no、部门编号dept\_no以及对应的bonus类型btype和received，没有分配奖金的员工不显示对应的bonus类型btype和received
+
+```sql
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+
+CREATE TABLE `emp_bonus`(
+emp_no int(11) NOT NULL,
+received datetime NOT NULL,
+btype smallint(5) NOT NULL);
+
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+```
+
+思路：常规题
+
+```sql
+select e.emp_no, d.dept_no, b.btype, b.received
+from 
+(
+    employees as e 
+    inner join
+    dept_emp as d 
+    on e.emp_no = d.emp_no
+) as de
+left join
+emp_bonus as b
+on de.emp_no = b.emp_no;
+```
+
