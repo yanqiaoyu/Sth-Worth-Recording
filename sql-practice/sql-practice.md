@@ -1606,3 +1606,186 @@ emp_bonus as b
 on de.emp_no = b.emp_no;
 ```
 
+## 57.使用含有关键字exists查找未分配具体部门的员工的所有信息。
+
+```sql
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+```
+
+思路：这题里面 not exist 和 not in是等价的
+
+```sql
+select * from employees 
+where not exists 
+(
+    select emp_no from 
+    dept_emp where employees.emp_no = dept_emp.emp_no
+)
+```
+
+## 58.获取employees中的行数据，且这些行也存在于emp\_v中。注意不能使用intersect关键字。\(你能不用select \* from employees where emp\_no &gt;10005 这条语句完成吗，挑战一下自己对视图的理解\)
+
+```sql
+create view emp_v as select * from employees where emp_no >10005;
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+```
+
+思路：视图是employee的子集，答案呼之欲出
+
+```sql
+select * from emp_v;
+```
+
+## 59.获取有奖金的员工相关信息。给出emp\_no、first\_name、last\_name、奖金类型btype、对应的当前薪水情况salary以及奖金金额bonus。 bonus类型btype为1其奖金为薪水salary的10%，btype为2其奖金为薪水的20%，其他类型均为薪水的30%。 当前薪水表示to\_date='9999-01-01' 输出格式:
+
+```sql
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+create table emp_bonus(
+emp_no int not null,
+received datetime not null,
+btype smallint not null);
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL, PRIMARY KEY (`emp_no`,`from_date`));
+```
+
+思路：主要考察  case语句的用法
+
+```sql
+    case b.btype 
+    when 1 then s.salary*0.1
+    when 2 then s.salary*0.2
+    else s.salary*0.3
+    end
+```
+
+```sql
+select e.emp_no, e.first_name, e.last_name, b.btype, s.salary, 
+(
+    case b.btype 
+    when 1 then s.salary*0.1
+    when 2 then s.salary*0.2
+    else s.salary*0.3
+    end
+) as bonus
+from 
+employees as e 
+inner join 
+emp_bonus as b 
+on e.emp_no = b.emp_no
+inner join 
+salaries as s 
+on e.emp_no = s.emp_no
+and s.to_date = '9999-01-01';
+```
+
+## IMPORTANT 60.按照salary的累计和running\_total，其中running\_total为前N个当前\( to\_date = '9999-01-01'\)员工的salary累计和，其他以此类推。 
+
+```sql
+CREATE TABLE `salaries` ( `emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+
+输出格式:
+emp_no	salary	running_total
+10001	88958	88958
+10002	72527	161485
+10003	43311	204796
+10004	74057	278853
+10005	94692	373545
+10006	43311	416856
+10007	88070	504926
+10009	95409	600335
+10010	94409	694744
+10011	25828	720572
+```
+
+思路：
+
+ ①本题关键在于把sum聚合函数作为窗口函数使用，所有聚合函数都能用做窗口函数，其语法和专用窗口函数完全相同。 sum\(&lt;汇总列&gt;\) over\(&lt;排序列&gt;\) as 别名； 
+
+②光看题目“前两个员工的salary累计和”不是很好理解，结合输出格式可以理解为running\_total列是逐个员工的工资的累计和，每一行的工资都是前面所有行的工资总计。 
+
+③这有一个小bug，题目没有限定时间为当前，而按照输出格式来看和通过情况来看，只有限定时间为当前'9999-01-01'才能符合输出格式，才能通过，一开始考虑用员工分组，但是员工分组得到的结果并非题目本意，必须限定时间为当前。
+
+```sql
+SELECT emp_no,salary,
+SUM(salary) OVER (ORDER BY emp_no) AS running_total
+FROM salaries
+WHERE to_date = '9999-01-01';
+```
+
+## SOOOOOOOO IMPORTANT 61.对于employees表中，输出first\_name排名\(按first\_name升序排序\)为奇数的first\_name
+
+```sql
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+如，输入为：
+INSERT INTO employees VALUES(10001,'1953-09-02','Georgi','Facello','M','1986-06-26');
+INSERT INTO employees VALUES(10002,'1964-06-02','Bezalel','Simmel','F','1985-11-21');
+INSERT INTO employees VALUES(10005,'1955-01-21','Kyoichi','Maliniak','M','1989-09-12');
+INSERT INTO employees VALUES(10006,'1953-04-20','Anneke','Preusig','F','1989-06-02');
+
+输出格式:
+first_name
+Georgi
+Anneke因为Georgi按first_name排名为3，Anneke按first_name排名为1，所以会输出这2个
+```
+
+思路：一直无法理解这种自连接查询大小的方法，值得好好看看
+
+```sql
+select e1.first_name
+from employees e1
+where 
+(
+    select count(*) from 
+    employees e2 
+    where e1.first_name >= e2.first_name
+)%2=1
+;
+```
+
