@@ -1124,3 +1124,37 @@ insert IGNORE into actor
 values(3,'ED','CHASE','2006-02-15 12:34:33');
 ```
 
+## 36.请你创建一个actor\_name表，并且将actor表中的所有first\_name以及last\_name导入该表.
+
+```sql
+对于如下表actor，其对应的数据为:
+actor_id	first_name	last_name	last_update
+1	PENELOPE	GUINESS	2006-02-15 12:34:33
+2	NICK	WAHLBERG	2006-02-15 12:34:33
+
+actor_name表结构如下：
+列表	类型	是否为NULL	含义
+first_name	varchar(45)	not null	名字
+last_name	varchar(45)	not null	姓氏
+```
+
+思路：这道题有两种思路
+
+1.按部就班，先建表，然后insert select from
+
+2.建表时就导入
+
+```sql
+create table actor_name
+(
+    first_name varchar(45) not null,
+    last_name varchar(45) not null
+);
+insert into actor_name
+select first_name, last_name from actor;
+
+
+create table actor_name as
+select first_name, last_name from actor;
+```
+
