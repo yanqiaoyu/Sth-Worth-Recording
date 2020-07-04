@@ -1124,7 +1124,7 @@ insert IGNORE into actor
 values(3,'ED','CHASE','2006-02-15 12:34:33');
 ```
 
-## 36.请你创建一个actor\_name表，并且将actor表中的所有first\_name以及last\_name导入该表.
+## IMPORTANT 36.请你创建一个actor\_name表，并且将actor表中的所有first\_name以及last\_name导入该表.
 
 ```sql
 对于如下表actor，其对应的数据为:
@@ -1156,5 +1156,82 @@ select first_name, last_name from actor;
 
 create table actor_name as
 select first_name, last_name from actor;
+```
+
+## IMPORTANT 37.针对如下表actor结构创建索引： \(注:在 SQLite 中,除了重命名表和在已有的表中添加列,ALTER TABLE 命令不支持其他操作\)
+
+```sql
+CREATE TABLE IF NOT EXISTS actor (
+actor_id smallint(5) NOT NULL PRIMARY KEY,
+first_name varchar(45) NOT NULL,
+last_name varchar(45) NOT NULL,
+last_update timestamp NOT NULL DEFAULT (datetime('now','localtime')))
+对first_name创建唯一索引uniq_idx_firstname，对last_name创建普通索引idx_lastname
+(请先创建唯一索引，再创建普通索引)
+```
+
+思路：基本语法
+
+```sql
+CREATE UNIQUE INDEX uniq_idx_firstname on actor(first_name);
+CREATE INDEX idx_lastname on actor(last_name);
+```
+
+## IMPORTANT 38.针对actor表创建视图actor\_name\_view，只包含first\_name以及last\_name两列，并对这两列重新命名，first\_name为first\_name\_v，last\_name修改为last\_name\_v：
+
+```sql
+CREATE TABLE IF NOT EXISTS actor (
+actor_id smallint(5) NOT NULL PRIMARY KEY,
+first_name varchar(45) NOT NULL,
+last_name varchar(45) NOT NULL,
+last_update timestamp NOT NULL DEFAULT (datetime('now','localtime')))
+```
+
+思路：基本语法
+
+```sql
+CREATE VIEW actor_name_view AS
+SELECT first_name AS first_name_v, last_name AS last_name_v
+FROM actor 
+```
+
+## IMPORTANT 39.针对salaries表emp\_no字段创建索引idx\_emp\_no，查询emp\_no为10005, 使用强制索引。
+
+```sql
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+create index idx_emp_no on salaries(emp_no);
+```
+
+思路：基本语法 sqlite 与 mysql不一致
+
+```sql
+--mysql
+SELECT * FROM salaries FORCE INDEX idx_emp_no WHERE emp_no = 10005
+
+--sqlite
+SELECT * FROM salaries INDEXED BY idx_emp_no WHERE emp_no = 10005
+```
+
+## IMPORTANT 40.现在在last\_update后面新增加一列名字为create\_date, 类型为datetime, NOT NULL，默认值为'0000-00-00 00:00:00'
+
+```sql
+存在actor表，包含如下列信息：
+CREATE TABLE IF NOT EXISTS actor (
+actor_id smallint(5) NOT NULL PRIMARY KEY,
+first_name varchar(45) NOT NULL,
+last_name varchar(45) NOT NULL,
+last_update timestamp NOT NULL DEFAULT (datetime('now','localtime')));
+```
+
+思路：基本语法
+
+```sql
+alter table actor
+add column `create_date` datetime not null default '0000-00-00 00:00:00';
 ```
 
