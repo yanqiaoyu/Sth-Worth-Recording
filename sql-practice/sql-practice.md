@@ -910,7 +910,33 @@ and strftime('%Y',s2.to_date)-strftime('%Y',s1.to_date)=1
 order by salary_growth desc;
 ```
 
-## 28.
+## ？？？ 28.查找描述信息\(film.description\)中包含robot的电影对应的分类名称\(category.name\)以及电影数目\(count\(film.film\_id\)\)，而且还需要该分类包含电影总数量\(count\(film\_category.category\_id\)\)&gt;=5部
+
+思路：这题有点睿智了，就当做是考察 LIKE这个关键字了
+
+```sql
+我们知道在 MySQL 中使用 SQL SELECT 命令来读取数据， 同时我们可以在 SELECT 语句中使用 WHERE 子句来获取指定的记录。
+
+WHERE 子句中可以使用等号 = 来设定获取数据的条件，如 "runoob_author = 'RUNOOB.COM'"。
+
+但是有时候我们需要获取 runoob_author 字段含有 "COM" 字符的所有记录，这时我们就需要在 WHERE 子句中使用 SQL LIKE 子句。
+
+SQL LIKE 子句中使用百分号 %字符来表示任意字符，类似于UNIX或正则表达式中的星号 *。
+
+SELECT field1, field2,...fieldN 
+FROM table_name
+WHERE field1 LIKE condition1 [AND [OR]] filed2 = 'somevalue'
+```
+
+```sql
+SELECT c.name AS name, COUNT(f.film_id) AS amount
+FROM film AS f, film_category AS fc, category AS c,
+(SELECT category_id FROM film_category GROUP BY category_id HAVING COUNT(category_id) >= 5) AS cc
+WHERE f.description LIKE '%robot%'
+AND f.film_id = fc.film_id
+AND fc.category_id = c.category_id
+AND c.category_id = cc.category_id
+```
 
 ## Done 29.使用join查询方式找出没有分类的电影id以及名称
 
@@ -947,5 +973,45 @@ ON f.film_id = fc.film_id
 WHERE fc.category_id IS NULL
 ```
 
+## 30.你能使用子查询的方式找出属于Action分类的所有电影对应的title,description吗
 
+```sql
+CREATE TABLE IF NOT EXISTS film (
+film_id smallint(5)  NOT NULL DEFAULT '0',
+title varchar(255) NOT NULL,
+description text,
+PRIMARY KEY (film_id));
+
+CREATE TABLE category  (
+category_id  tinyint(3)  NOT NULL ,
+name  varchar(25) NOT NULL, `last_update` timestamp,
+PRIMARY KEY ( category_id ));
+
+CREATE TABLE film_category  (
+film_id  smallint(5)  NOT NULL,
+category_id  tinyint(3)  NOT NULL, `last_update` timestamp);
+```
+
+思路：
+
+1.什么是子查询
+
+在一个表表达中可以调用另一个表表达式，这个被调用的表表达式叫做子查询（subquery），我么也称作子选择（subselect）或内嵌选择（inner select）。子查询的结果传递给调用它的表表达式继续处理。
+
+说白了就是嵌套语句
+
+```sql
+select f.title, f.description
+from film as f 
+where f.film_id in 
+(
+    select fc.film_id from
+    film_category as fc 
+    inner join 
+    category as c 
+    on fc.category_id = c.category_id
+    and c.name = 'Action'
+    
+)
+```
 
