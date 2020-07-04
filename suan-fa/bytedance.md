@@ -64,7 +64,7 @@ class Solution:
 
 ```
 
-## LeetCode **1. 两数之和**
+## LeetCode **1. 两数之和：**
 
 显然，这一题可以用字典来做
 
@@ -92,4 +92,70 @@ class Solution:
             mydic[nums[i]] = i
         return []
 ```
+
+## LeetCode **15. 三数之和：**给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。注意：答案中不可以包含重复的三元组。
+
+可真是把爷整懵了, 初看这道题，想到的是2数之和的变种， 毕竟 a+b+c = 0可以推倒为 a+b=-c，但是并不是最优方法
+
+思路：
+
+0.排序，这个直接 .sort\(\)算了
+
+1.我们先固定一位，比方说p1在第一次循环中先指向nums\[0\]
+
+2.第二个指针和第三个指针分别指向剩下数组的low 和 high
+
+3.low逐渐右移
+
+4.在这个过程中，注意去重，也要注意，如果p1已经大于0了，那么剩下的无需继续验证了，必然不可能等于0了（因为已经排好序了，后面都是大于0的了）
+
+下面给出一个不会超时的答案
+
+```python
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        #0.异常处理
+        
+        if nums == []:
+            return []
+        elif len(nums) < 3:
+            return []
+        elif nums == [0]*len(nums):
+            return [[0,0,0]]
+        
+        
+        #1.先对数组排序
+        nums.sort()
+        Length = len(nums)
+        result = []
+
+        #2.定义3个指针，第一个指针每轮固定
+        #第二第三个指针分别指向low ， high
+        #high 不断-- ，知道相遇或者符合题意
+        #过程中记得去重
+        for p1 in range(Length):
+            if nums[p1] > 0:
+                break
+            #p1去重, p1不大于0，会导致溢出
+            if p1 > 0 and nums[p1] == nums[p1 - 1]:
+                #重复了，跳过此次循环
+                continue
+            p3 = Length - 1
+            #p1没重复，开始走p2和p3
+            for p2 in range(p1+1, Length):
+                #p2去重
+                if p2 > p1+1 and nums[p2] == nums[p2 - 1]:
+                    continue
+                #只要p3明显不符合要求，就左移
+                while p3>p2 and nums[p2]+nums[p3] > -nums[p1]:
+                    p3 -= 1
+                if p2 == p3:
+                    break
+                if nums[p1] + nums[p2] + nums[p3] == 0:
+                    result.append([nums[p1] , nums[p2] , nums[p3]]) 
+        return result
+
+```
+
+重点关注Line 36 -41的代码，这里没写好无法AC
 
