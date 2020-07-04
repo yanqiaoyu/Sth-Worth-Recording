@@ -910,7 +910,7 @@ and strftime('%Y',s2.to_date)-strftime('%Y',s1.to_date)=1
 order by salary_growth desc;
 ```
 
-## ？？？ 28.查找描述信息\(film.description\)中包含robot的电影对应的分类名称\(category.name\)以及电影数目\(count\(film.film\_id\)\)，而且还需要该分类包含电影总数量\(count\(film\_category.category\_id\)\)&gt;=5部
+## Note 28.查找描述信息\(film.description\)中包含robot的电影对应的分类名称\(category.name\)以及电影数目\(count\(film.film\_id\)\)，而且还需要该分类包含电影总数量\(count\(film\_category.category\_id\)\)&gt;=5部
 
 思路：这题有点睿智了，就当做是考察 LIKE这个关键字了
 
@@ -973,7 +973,7 @@ ON f.film_id = fc.film_id
 WHERE fc.category_id IS NULL
 ```
 
-## 30.你能使用子查询的方式找出属于Action分类的所有电影对应的title,description吗
+## Done 30.你能使用子查询的方式找出属于Action分类的所有电影对应的title,description吗
 
 ```sql
 CREATE TABLE IF NOT EXISTS film (
@@ -1013,5 +1013,114 @@ where f.film_id in
     and c.name = 'Action'
     
 )
+```
+
+## Note 31.获取select \* from employees对应的执行计划
+
+思路：
+
+explain 这个关键字就是用来解释执行计划的
+
+```sql
+explain select * from employees
+```
+
+## Note 32.将employees表的所有员工的last\_name和first\_name拼接起来作为Name，中间以一个空格区分
+
+```sql
+CREATE TABLE `employees` ( `emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+```
+
+思路：注意在sqlite和mysql，拼接的办法里面不一致
+
+```sql
+select (employees.last_name || ' ' || employees.first_name) as Name
+from employees;
+
+select CONCAT(last_name," "，first_name) as name  from employees
+```
+
+## IMPORTANT 33.创建一个actor表，包含如下列信息\(注：sqlite获取系统默认时间是datetime\('now','localtime'\)\)
+
+```sql
+
+列表	类型	是否为NULL	含义
+actor_id	smallint(5)	not null	主键id
+first_name	varchar(45)	not null	名字
+last_name	varchar(45)	not null	姓氏
+last_update	timestamp	not null	最后更新时间，默认是系统的当前时间
+```
+
+思路：创建新表的基本语法，注意主键如何定义
+
+```sql
+create table actor
+(
+    actor_id smallint(5) not null,
+    first_name varchar(45) 	not null,
+    last_name varchar(45) 	not null,
+    last_update timestamp not null default(datetime('now','localtime')),
+    primary key(actor_id)
+);
+```
+
+## IMPORTANT 34.对于表actor批量插入如下数据\(不能有2条insert语句哦!\)
+
+```sql
+CREATE TABLE IF NOT EXISTS actor (
+actor_id smallint(5) NOT NULL PRIMARY KEY,
+first_name varchar(45) NOT NULL,
+last_name varchar(45) NOT NULL,
+last_update timestamp NOT NULL DEFAULT (datetime('now','localtime')))
+
+actor_id	first_name	last_name	last_update
+1	PENELOPE	GUINESS	2006-02-15 12:34:33
+2	NICK	WAHLBERG	2006-02-15 12:34:33
+```
+
+ 思路:考察批量插入
+
+```sql
+以下为向MySQL数据表插入数据通用的 INSERT INTO SQL语法：
+
+INSERT INTO table_name ( field1, field2,...fieldN )
+                       VALUES
+                       ( value1, value2,...valueN );
+```
+
+```sql
+insert into actor 
+values(1, "PENELOPE", "GUINESS", "2006-02-15 12:34:33"),
+      (2, "NICK", "WAHLBERG", "2006-02-15 12:34:33")
+```
+
+## IMPORTANT 35.对于表actor批量插入如下数据,如果数据已经存在，请忽略\(不支持使用replace操作\)
+
+```sql
+CREATE TABLE IF NOT EXISTS actor (
+actor_id smallint(5) NOT NULL PRIMARY KEY,
+first_name varchar(45) NOT NULL,
+last_name varchar(45) NOT NULL,
+last_update timestamp NOT NULL DEFAULT (datetime('now','localtime')))
+
+
+actor_id	first_name	last_name	last_update
+'3'	'ED'	'CHASE'	'2006-02-15 12:34:33'
+```
+
+思路：语法，没有思路，注意，这个语句在mysql与sqlite中也不一样
+
+```sql
+insert or ignore into actor
+values('3', 'ED', 'CHASE', '2006-02-15 12:34:33');
+
+insert IGNORE into actor
+values(3,'ED','CHASE','2006-02-15 12:34:33');
 ```
 
