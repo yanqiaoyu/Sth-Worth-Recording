@@ -159,3 +159,119 @@ class Solution:
 
 重点关注Line 36 -41的代码，这里没写好无法AC
 
+## LeetCode **3. 无重复字符的最长子串 :**给定一个字符串，请你找出其中不含有重复字符的 **最长子串** 的长度。
+
+这是我为数不多的一次AC的题，主要思想：双指针做滑动窗口+字典去重
+
+```python
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        #0.异常处理
+        if not s:
+            return 0
+        #双指针的滑动窗口
+        start = end = 0
+        res = {}
+        max = 0
+        while end < len(s):
+            #只要右指针指向的元素还未出现，就添加进字典中
+            if s[end] not in res:
+                res[s[end]] = 1
+                end += 1
+            #如果右指针指向的元素已经出现了
+            else:
+                #缩短左指针，直到又不存在重复为止
+                res[s[start]] -= 1
+                #如果缩短后已经没了，就从res里面pop出这个元素
+                if res[s[start]] == 0:
+                    res.pop(s[start])
+                #左指针继续走
+                start += 1
+            if len(res) > max:
+                max = len(res)
+        return max
+```
+
+## LeetCode 160.相交链表
+
+又是一题能够自己想出思路的题
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        #没有参考题解，说说自己的思路
+        #先走一遍 A B链表
+        #计算出A B的长度
+        #然后 计算出A与B的差值，让长的那个再开始走这个差值
+        #此时，A B都应该距离相交节点距离等长
+        #开始同时往后走，判断是否存在相同节点
+        #0.异常处理
+        if not headA or not headB:
+            return None 
+        #1.计算A B长度
+        LengthA = 0
+        LengthB = 0
+        pA = headA
+        pB = headB
+        while pA:
+            if pA:
+                LengthA += 1
+            if pA.next:
+                pA = pA.next
+            else:
+                break
+        while pB:
+            if pB:
+                LengthB += 1
+            if pB.next:
+                pB = pB.next
+            else:
+                break
+        #2.计算差值,取绝对值
+        d = abs(LengthA - LengthB)
+
+        #3.让长的那个先走
+        pTemp1 = headA if LengthA >= LengthB else headB
+        for i in range(d):
+            pTemp1 = pTemp1.next
+        
+        #4.然后长短一起走
+        pTemp2 = headB if LengthA >= LengthB else headA
+        while True:
+            if pTemp1 ==  None and pTemp2 == None:
+                return None
+            elif pTemp1 == pTemp2 and pTemp1!=None:
+                return pTemp1
+            pTemp1 = pTemp1.next
+            pTemp2 = pTemp2.next
+```
+
+我佛了，看完题解，别人的思路也太强了8，我哭了嗷
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        #题解思路：A走完A后去走B，B走完B后去走A，有缘终究相遇，无缘返回None
+        #0.异常处理
+        if not headA or not headB:
+            return None 
+        pA = headA
+        pB = headB
+        while pA != pB:
+            pA = pA.next if pA else headB
+            pB = pB.next if pB else headA
+        return pA  
+```
+
