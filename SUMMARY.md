@@ -22,3 +22,9 @@
 
 * [Selenium+pynput完成自动化web页面升级路由器](selenium/selenium+pynput-wan-cheng-zi-dong-hua-web-ye-mian-sheng-ji-lu-you-qi.md)
 
+## 面试
+
+* [测试用例设计](mian-shi/ce-shi-yong-li-she-ji.md)
+* [测试基础](mian-shi/ce-shi-ji-chu.md)
+* [数据库面试](mian-shi/shu-ju-ku-mian-shi.md)
+
