@@ -368,3 +368,47 @@ class Solution:
             return False
 ```
 
+## LeetCode 236.二叉树的最近公共祖先
+
+## 剑指Offer 21.
+
+如果用额外空间的话其实挺简单的
+
+```python
+class Solution:
+    def exchange(self, nums: List[int]) -> List[int]:
+        #自己的思路，长度为n的辅助栈
+        if not nums:
+            return []
+        stack1=[]
+        stack2=[]
+        for i in nums:
+            if i % 2 == 1:
+                stack1.append(i)
+            else:
+                stack2.append(i)
+        return stack1+stack2
+```
+
+下面用双端指针，不需要额外空间来做
+
+```python
+        if not nums:
+            return []
+        #双端指针
+        low = 0
+        high = len(nums)-1
+
+        while low < high:
+            #由于奇数在前，偶数在后，让low指针找到第一个偶数停下
+            while low < high and nums[low] % 2 == 1:
+                low += 1
+            #让high指针找到第一个偶数停下
+            while low < high and nums[high] % 2 == 0:
+                high -= 1
+
+            #交换位置
+            nums[low], nums[high] = nums[high], nums[low]
+        return nums
+```
+
