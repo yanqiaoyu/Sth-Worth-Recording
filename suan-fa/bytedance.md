@@ -275,3 +275,96 @@ class Solution:
         return pA  
 ```
 
+## 剑指 Offer 39. 数组中出现次数超过一半的数字
+
+常规思路：HashMap
+
+```python
+class Solution:
+    def majorityElement(self, nums: List[int]) -> int:
+        dic = {}
+        for i in range(len(nums)):
+            if nums[i] not in dic:
+                dic[nums[i]] = 1
+            else:
+                dic[nums[i]] += 1
+            if dic[nums[i]] > len(nums) // 2:
+                return nums[i]
+```
+
+更低时间复杂度的一种思路:投票法
+
+设第一个为众数，往后遍历，相同+1 不同-1 ，直到变成0，设下一个数为众数，最后返回这个众数即可
+
+如果需要验证是否是众数，只需再遍历一次判断个数是否大于长度的一半即可
+
+```python
+class Solution:
+    def majorityElement(self, nums: List[int]) -> int:
+        votes, count = 0, 0
+        for num in nums:
+            if votes == 0: 
+                x = num
+            #votes += 1 if num == x else -1
+            if num == x:
+                votes += 1
+            else:
+                votes -= 1
+        return x
+        '''
+        # 验证 x 是否为众数
+        for num in nums:
+            if num == x: 
+                count += 1
+        return x if count > len(nums) // 2 else 0 # 当无众数时返回 0
+        '''
+```
+
+## LeetCode 20.有效的括号
+
+Easy题，又一次不参考题解写了出来
+
+```python
+class Solution:
+    def isValid(self, s: str) -> bool:
+        #看到这一题第一想到的用栈
+        #注意这题只有特殊符号
+        #0.异常处理，注意这里空字符串有效
+        if not s:
+            return True
+        #如果长度为奇数，无需验证直接false
+        if len(s)%2 == 1:
+            return False
+        #1.用栈来pop push
+        result = []
+        s = list(s)
+        for i in range(len(s)):
+            if s[i] == '(' or s[i] == '[' or s[i] == '{':
+                result.append(s[i])
+            else:
+                if not self.PopUntilFind(result, s[i]):
+                    return False
+        #显然，如果最后result还有剩下的，那肯定不匹配
+        return True if len(result) == 0 else False
+                
+    def PopUntilFind(self, result, char):
+        if char == ')':
+            for _ in result:
+                match = result.pop()
+                if match == '(':
+                    return True
+            return False
+        elif char == ']':
+            for _ in result:
+                match = result.pop()
+                if match == '[':
+                    return True
+            return False
+        elif char == '}':
+            for _ in result:
+                match = result.pop()
+                if match == '{':
+                    return True
+            return False
+```
+
