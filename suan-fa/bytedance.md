@@ -412,7 +412,7 @@ class Solution:
         return nums
 ```
 
-## LeetCode 19.反转链表
+## LeetCode 19.删除链表的倒数第N个节点
 
 按照双指针一个先走n，一个后开始走的思路即可，注意边界与异常值判读
 
@@ -457,5 +457,89 @@ class Solution:
         return head
 
 
+```
+
+## LeetCode 206.反转链表
+
+迭代方法，只需要思考清楚断链的过程就很清晰了
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        #定义两个指针，一个指向虚构的一个Null节点，一个指向第1个节点
+        #Null -> 1 -> 2 -> 3 -> 4 -> 5 -> Null
+        # p1     p2(head)
+        p1 = None
+        p2 = head
+
+        #0.考虑异常情况
+        if not head:
+            return None
+        elif head.next == None:
+            return head
+        #考虑断链过程
+        #1.head往前走
+        #Null -> 1 -> 2
+        # p1     p2   head
+        #2.p2的节点的next指向p1
+        #Null <- 1    2
+        # p1    p2    head
+        #3.p1 跑到p2这里
+        #Null <- 1     2
+        #      p2(p1) head
+        #4.p2 跑到 head这里
+        #Null <- 1     2
+        #        p1   p2(head)
+        #重复
+
+        while p2:
+            head = head.next
+            p2.next = p1
+            p1 = p2 
+            p2 = head
+        return p1
+```
+
+题目里还问了能否用递归来解决，有点小头疼
+
+注意，这里面的递归返回的一直都是5，也就是最末尾的节点，因为这个节点最后要作为头结点返回
+
+而中间那两句才是精髓
+
+假设我们到最深后，第一次返回
+
+现在是4，那么4.next.next = 4 ,就是5.next = 4
+
+4.next = null ，就是断链
+
+厉害了..
+
+```python
+class Solution(object):
+	def reverseList(self, head):
+		"""
+		:type head: ListNode
+		:rtype: ListNode
+		"""
+		# 递归终止条件是当前为空，或者下一个节点为空
+		if(head==None or head.next==None):
+			return head
+		# 这里的cur就是最后一个节点
+		cur = self.reverseList(head.next)
+		# 这里请配合动画演示理解
+		# 如果链表是 1->2->3->4->5，那么此时的cur就是5
+		# 而head是4，head的下一个是5，下下一个是空
+		# 所以head.next.next 就是5->4
+		head.next.next = head
+		# 防止链表循环，需要将head.next设置为空
+		head.next = None
+		# 每层递归函数都返回cur，也就是最后一个节点
+		return cur
 ```
 
