@@ -370,7 +370,7 @@ class Solution:
 
 ## LeetCode 236.二叉树的最近公共祖先
 
-## 剑指Offer 21.
+## 剑指Offer 21.调整数组顺序使奇数位于偶数前面
 
 如果用额外空间的话其实挺简单的
 
@@ -410,5 +410,52 @@ class Solution:
             #交换位置
             nums[low], nums[high] = nums[high], nums[low]
         return nums
+```
+
+## LeetCode 19.反转链表
+
+按照双指针一个先走n，一个后开始走的思路即可，注意边界与异常值判读
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+        #说说自己的思路，以示例的链表为例
+        #定义两个指针，一个先走n步，另一个再开始走
+        #等第一个走到了尽头，另一个也走到了需要被删除的结点的前面
+
+        #0.异常处理
+        if not head:
+            return None
+        
+        #1.定义两个指针
+        pFast = pSlow = head
+
+        #2.fast先走n步
+        for i in range(n):
+            pFast = pFast.next
+        
+        #如果pFast此时已经None了
+        #举例:[1,2] 2 或者 [1] 1
+        if not pFast:
+            pSlow = pSlow.next
+            return pSlow
+
+        #3.两个开始一起走,直到pFast走到最后一个结点
+        while pFast.next:
+            pFast = pFast.next
+            pSlow = pSlow.next
+        
+        #4.此时pSlow已经走到了要被删除的结点的前面，准备删除
+        pSlow.next = pSlow.next.next
+
+        return head
+
+
 ```
 
