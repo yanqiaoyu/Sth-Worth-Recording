@@ -543,3 +543,32 @@ class Solution(object):
 		return cur
 ```
 
+## LeetCode **9. 回文数**
+
+两种办法，一种利用字符串的性质，直接得出结论，另一种运用数学办法算
+
+```python
+class Solution:
+    def isPalindrome(self, x: int) -> bool:
+        #0.依题意，负数肯定不是回文数
+        if x < 0:
+            return False
+        elif x == 0:
+            return True
+        '''
+        如果不使用字符串的方法
+        return str(x) == str(x)[::-1]
+        '''
+
+        newInt = 0
+        y = x
+        
+        while y:
+            tmp = y % 10
+            newInt = newInt*10 + tmp
+            y = y // 10
+        return newInt == x
+
+
+```
+
