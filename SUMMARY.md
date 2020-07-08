@@ -30,4 +30,5 @@
 * [App相关](mian-shi/app-xiang-guan.md)
 * [计算机网络](mian-shi/ji-suan-ji-wang-luo.md)
 * [用例设计](mian-shi/yong-li-she-ji.md)
+* [一些工具的原理](mian-shi/yi-xie-gong-ju-de-yuan-li.md)
 

@@ -696,8 +696,11 @@ class Solution:
                 low = mid + 1
         
         return low if nums[low] == target else -1
-            
-
-        
 ```
+
+## LeetCode **25. K 个一组翻转链表**
+
+虽然是Hard题，但是思路其实非常好理解，这里我们使用栈完成翻转
+
+
 
