@@ -677,3 +677,27 @@ class Solution:
         return max(left, right)+1
 ```
 
+## LeetCode 704 二分查找
+
+```python
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        #有序数组，考虑二分
+        high = len(nums) - 1
+        low = 0
+
+        while low < high:
+            mid = (low + high) // 2
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] > target:
+                high = mid - 1
+            elif nums[mid] < target:
+                low = mid + 1
+        
+        return low if nums[low] == target else -1
+            
+
+        
+```
+
