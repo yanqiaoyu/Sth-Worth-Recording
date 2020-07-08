@@ -572,5 +572,41 @@ class Solution:
 
 ```
 
-## LeetCode 
+## LeetCode  169. **多数元素**
+
+经典思路，无须多言
+
+```python
+class Solution:
+    def majorityElement(self, nums: List[int]) -> int:
+        #method 1 空间换时间
+        '''
+        dic={}
+        halflen = len(nums) // 2
+        for i in nums:
+            if i not in dic:
+                dic[i] = 1
+            else:
+                dic[i] += 1
+            if dic[i] > halflen:
+                return i
+        '''
+        
+        #method 2 投票
+        #记第一个元素为1，往后走，相同+1，不同-1，为0则更换元素
+        '''
+        result = nums[0]
+        count = 1
+        for i in range(1, len(nums)):
+            if count == 0:
+                result = nums[i]
+            if nums[i] == result:
+                count += 1
+            else:
+                count -= 1
+        return result
+        '''
+            
+        
+```
 
