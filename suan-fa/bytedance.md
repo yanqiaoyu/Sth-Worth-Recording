@@ -612,7 +612,34 @@ class Solution:
 
 ## LeetCode 215 数组中的第K个最大元素
 
-经典的TopK问题，用到了经典的快速排序
+经典的TopK问题，用到了经典的快速排序，或者堆，最最最基本的基本功了，不管怎么样都必须记住
+
+先给出快速排序的写法
+
+## LeetCode 796.旋转字符串
+
+很有趣的问题，第一个方法参考了别人的精妙的想法 A+A必然囊括了所有B的可能性
+
+第二个方法就是常规的遍历了
+
+```python
+class Solution:
+    def rotateString(self, A: str, B: str) -> bool:
+        '''
+        method 1 直接利用语法特性判断 B在不在 A+A里面
+        '''
+        return len(A) == len(B) and B in (A+A)
+
+        '''
+        method 2 遍历判断: 只要在长度遍历完之前，跳出了循环，说明存在相同的字串
+        '''
+        while maxStep:
+            A=A[1:]+A[0]
+            if A==B:
+                break
+            maxStep-=1
+        return maxStep>0
+```
 
 
 
