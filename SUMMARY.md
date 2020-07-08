@@ -17,6 +17,7 @@
 ## Jmeter
 
 * [路由器Web压力测试](jmeter/lu-you-qi-web-ya-li-ce-shi.md)
+* [笔记](jmeter/bi-ji.md)
 
 ## Selenium
 
@@ -31,4 +32,5 @@
 * [计算机网络](mian-shi/ji-suan-ji-wang-luo.md)
 * [用例设计](mian-shi/yong-li-she-ji.md)
 * [一些工具的原理](mian-shi/yi-xie-gong-ju-de-yuan-li.md)
+* [Linux相关](mian-shi/linux-xiang-guan.md)
 
