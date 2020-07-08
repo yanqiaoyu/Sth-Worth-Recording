@@ -645,5 +645,35 @@ class Solution:
 
 这道题我一开始想的简单了，以为最大路径就是从根结点出发，求左子树的最大的深度和右子树的最大深度，但是实际上不是，因为最大路径不一定会经过根结点
 
+看了一下别人的解答，其实这道题本质上还是求最大深度的问题，只是需要遍历这棵树，求的是**每一个**结点的最大左子树深度和最大右子树深度
 
+可以接着做 124 和 687
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def __init__(self):
+        self.max = 0
+
+    def diameterOfBinaryTree(self, root: TreeNode) -> int:
+        self.deepth(root)
+
+        return self.max
+
+    def deepth(self, root):
+        if not root:
+            return 0
+        left = self.deepth(root.left)
+        right = self.deepth(root.right)
+
+        self.max = max(self.max, left+right)
+
+        return max(left, right)+1
+```
 
