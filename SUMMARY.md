@@ -33,5 +33,5 @@
 * [一些工具的原理](mian-shi/yi-xie-gong-ju-de-yuan-li.md)
 * [Linux相关](mian-shi/linux-xiang-guan.md)
 * [操作系统](mian-shi/cao-zuo-xi-tong.md)
-* [ByteDancer](mian-shi/bytedancer.md)
+* [ByteDancer专题](mian-shi/bytedancer.md)
 
