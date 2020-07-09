@@ -26,11 +26,10 @@
 ## 面试
 
 * [测试用例设计](mian-shi/ce-shi-yong-li-she-ji.md)
-* [测试基础](mian-shi/ce-shi-ji-chu.md)
-* [数据库面试](mian-shi/shu-ju-ku-mian-shi.md)
-* [App相关](mian-shi/app-xiang-guan.md)
+* [测试理论基础](mian-shi/ce-shi-ji-chu.md)
+* [数据库](mian-shi/shu-ju-ku-mian-shi.md)
+* [App](mian-shi/app-xiang-guan.md)
 * [计算机网络](mian-shi/ji-suan-ji-wang-luo.md)
-* [用例设计](mian-shi/yong-li-she-ji.md)
 * [一些工具的原理](mian-shi/yi-xie-gong-ju-de-yuan-li.md)
 * [Linux相关](mian-shi/linux-xiang-guan.md)
 * [操作系统](mian-shi/cao-zuo-xi-tong.md)
