@@ -159,6 +159,10 @@ Linux里面2MSL是60秒
 
 参考 [https://www.zhihu.com/question/271701044](https://www.zhihu.com/question/271701044)
 
+为什么是四次挥手呢？因为在三次握手中，服务端的ACK和SYN是一起发送的，
+
+而在四次挥手中，客户端主动发送了FIN报文后，服务端会先回一个ACK，等服务端处理完要发送的信息，才会发送FIN，因此四次挥手多就是多在这一步
+
 ## 12. 2MSL如果过长或者过短会怎么样？
 
 先说说过短的情况
@@ -169,5 +173,9 @@ Linux里面2MSL是60秒
 
 参考 [https://www.zhihu.com/question/271701044](https://www.zhihu.com/question/271701044)
 
-## 
+## 13.TCP UDP区别
+
+TCP是有连接的，可靠的，面向流的
+
+UDP是无连接的，不可靠的，面向报文的
 
