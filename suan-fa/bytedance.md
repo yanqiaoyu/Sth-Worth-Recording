@@ -370,6 +370,62 @@ class Solution:
 
 ## LeetCode 236.二叉树的最近公共祖先
 
+首先需要明确的一点，这种题本质上是一个后序遍历
+
+其次，就是在后序遍历之中其他的语句完成题目所需要的判断
+
+一次标准的后序遍历是什么样的？
+
+```python
+    def __init__(self):
+        self.result=[]
+
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+        
+        self.postorderTraversal(root.left)
+        self.postorderTraversal(root.right)
+        self.result.append(root.val)
+        return self.result
+```
+
+当然，这道题目其实不需要记录遍历值，我们需要的是最近的一个公共祖先，所以修改如下
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        # 递归终止条件：当前节点为空，或者找到了p 和 q其中的一个
+        if not root or root == p or root == q:
+            return root
+        
+        # 递归主体：左 右
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+
+        # 递归后的判断
+        #左也没有，右也没有，是叶子节点
+        if not left and not right:
+            return
+        #只有左或者只有右
+        if not left:
+            return right
+        if not right:
+            return left
+        #左右都有
+        return root
+        
+```
+
+
+
 ## 剑指Offer 21.调整数组顺序使奇数位于偶数前面
 
 如果用额外空间的话其实挺简单的
