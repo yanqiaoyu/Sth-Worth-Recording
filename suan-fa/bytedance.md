@@ -968,7 +968,6 @@ class Solution:
                 8:'8', 9: '9', 10: 'a', 11: 'b', 
                 12: 'c', 13: 'd', 14: 'e', 15: 'f'}
 
-
         while num != 0:
             result = dic[num % 16] + result
             num //= 16
@@ -976,7 +975,53 @@ class Solution:
         return result
 ```
 
+## LeetCode 200. **岛屿数量**
 
+主要思想：
+
+1.先遍历这个二维矩阵，找到一个有1的地方，进入深度优先遍历，每次进入都意味着找到了一个岛屿，记得+1
+
+2.进入DFS后，不断寻找周围是1的格子，把他们置为0，防止下次遍历又找到了他们
+
+其实非常好理解的
+
+```python
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+
+        #0.异常处理
+        if not grid:
+            return 0
+
+        #1.遍历矩阵
+        x = len(grid[0])
+        y = len(grid)
+        result = 0
+
+        for i in range(y):
+            for j in range(x):
+                #2.如果找到了一个grid[i][j]为1的，进入DFS
+                if grid[i][j] == '1':
+                    self.DFS(grid, i, j)
+                    result += 1
+        return result
+
+    def DFS(self, grid, i, j):
+        #什么样的情况需要return？
+        #1.数组越界了
+        #2.相邻的[i][j]不再是1了
+        if not 0 <= i < len(grid) or not 0 <= j < len(grid[0]) or grid[i][j] == '0':
+            return 
+
+        # 否则，说明这个格子是“1”，置为0
+        grid[i][j] = '0'
+
+        #四周扩散
+        self.DFS(grid, i+1, j)
+        self.DFS(grid, i-1, j)
+        self.DFS(grid, i, j-1)
+        self.DFS(grid, i, j+1)
+```
 
 
 
