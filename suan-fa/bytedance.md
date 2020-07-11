@@ -836,3 +836,11 @@ class Solution:
         return max(left, right)
 ```
 
+## LeetCode 146 **LRU缓存机制**
+
+就很复杂，就很难受，就必须按部就班写好
+
+
+
+
+
