@@ -672,6 +672,38 @@ class Solution:
 
 先给出快速排序的写法
 
+```python
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        def partition(left, right):
+            pivot = nums[left]
+            l = left + 1
+            r = right
+            while l <= r:
+                if nums[l] < pivot and nums[r] > pivot:
+                    nums[l], nums[r] = nums[r], nums[l]
+                if nums[l] >= pivot:
+                    l += 1
+                if nums[r] <= pivot:
+                    r -= 1
+            #为什么是r，因为r的左边都是pivot大的了
+            nums[r], nums[left] = nums[left], nums[r]
+            return r
+        
+        #快速排序+二分查找+逆序排序
+
+        left = 0
+        right = len(nums) - 1
+        while 1:
+            idx = partition(left, right)
+            if idx == k - 1:
+                return nums[idx]
+            if idx < k - 1:
+                left = idx + 1
+            if idx > k - 1:
+                right = idx - 1
+```
+
 ## LeetCode 796.旋转字符串
 
 很有趣的问题，第一个方法参考了别人的精妙的想法 A+A必然囊括了所有B的可能性
