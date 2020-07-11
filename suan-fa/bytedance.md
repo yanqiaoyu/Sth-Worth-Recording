@@ -758,5 +758,47 @@ class Solution:
 
 虽然是Hard题，但是思路其实非常好理解，这里我们使用栈完成翻转
 
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
+        #定义一个虚拟的头结点
+        #Fakepre -> 1 -> 2 -> 3 -> 4 -> 5
+        #k个节点入栈 cur
+        #Fakepre -> [1 -> 2 -> 3] -> 4 -> 5 -> Null
+        #弹出                         cur
+        #Fakepre -> [3 -> 2 -> 1] -> 4 -> 5 -> Null
+        #                      p    cur
+        FakePre = ListNode(-1)
+        p = FakePre
+
+        cur = head
+        stack = []
+
+        while cur:
+            #k个节点入栈
+            for count in range(k):
+                stack.append(cur)
+                cur = cur.next
+                #剩余节点不足以构成反转链表
+                if cur == None and count < k-1:
+                    return FakePre.next
+            
+            #k个节点出栈
+            while stack:
+                p.next = stack.pop()
+                p = p.next
+            
+            #出完栈后，p指向的其实是栈底元素，现在让他指向cur
+            p.next = cur
+
+        return FakePre.next
+```
+
 
 
