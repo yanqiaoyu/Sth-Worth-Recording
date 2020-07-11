@@ -840,6 +840,112 @@ class Solution:
 
 就很复杂，就很难受，就必须按部就班写好
 
+注意movetohead要和addtohead分开
+
+其余就是链表操作要很小心
+
+```python
+class LinkNode:
+    def __init__(self, key=0, val=0):
+        #一个链表中的节点
+        self.key = key
+        self.val = val
+        self.next = None
+        self.pre = None
+
+class LRUCache:
+
+    def __init__(self, capacity: int):
+        #定义双向链表的头，尾
+        self.head = LinkNode()
+        self.tail = LinkNode()
+
+        #初始化时，头指尾，尾指头
+        self.head.next = self.tail
+        self.tail.pre = self.head
+
+        #初始化容量，字典，字典大小
+        self.cache={}
+        self.capacity = capacity
+        self.SizeofCache = 0
+        
+    def get(self, key: int) -> int:
+        #执行一次get，我们需要完成什么？
+        #1.不在cache中，返回-1
+        #2.在cache中，根据key返回val
+        #3.返回了val之后，把这个数移到头部
+
+        if key not in self.cache:
+            return -1
+        else:
+            #先移动到头部，再返回key
+            Node = self.cache[key]
+            self.MoveToHead(Node)
+            return Node.val
+
+
+    def put(self, key: int, value: int) -> None:
+        #一次Put操作需要完成什么？
+        #1.判断在不在Cache里
+        #2.在，更新值，移动到表头
+        #3.不在，添加到Cache，移动到表头，删除表的最后一个节点
+
+        if key in self.cache:
+            Node = self.cache[key]
+            Node.val = value
+            self.MoveToHead(Node)
+        else:
+            Node = LinkNode(key, value)
+            self.cache[key] = Node
+            self.SizeofCache += 1
+            self.AddToHead(Node)
+
+            if self.SizeofCache > self.capacity:
+                Key = self.RemoveFromTail()
+                self.cache.pop(Key)
+                self.SizeofCache -= 1
+
+        
+    def RemoveFromTail(self):
+        #如何找到最后一个元素？
+        #根据Tail来找
+        #Head <-> Node1 ... Node2 <-> Node3 <-> Tail
+        Node = self.tail.pre
+        #删除
+        Node.pre.next = Node.next
+        Node.next.pre = Node.pre
+
+        return Node.key
+
+    def AddToHead(self, Node):
+        Node.next = self.head.next
+        Node.pre = self.head
+
+        self.head.next = Node
+        Node.next.pre = Node
+        
+
+    def MoveToHead(self, Node):
+        #把一个结点移动到链表的头部
+        #这个链表形如这样 Head <-> Node1 <-> Node2 <-> Node3 ... <-> Tail
+
+        #如何删除一个结点？
+        #上一个的下一个，指向下一个
+        #下一个的上一个，指向上一个
+        Node.pre.next = Node.next
+        Node.next.pre = Node.pre
+
+        #移动到头部？
+        #先新建，再断链
+        Node.next = self.head.next
+        Node.next.pre = Node
+         
+        Node.pre =  self.head
+        self.head.next = Node
+
+
+```
+
 
 
 
