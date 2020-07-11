@@ -948,5 +948,35 @@ class LRUCache:
 
 
 
+## LeetCode 405 数字转换为十六进制数
+
+```python
+class Solution:
+    def toHex(self, num: int) -> str:
+        #0.异常与特判
+        if num == 0:
+            return "0"
+
+        #这一步是Python中取负数的补码
+        num = num & 0xffffffff
+
+        #存储最终的结果
+        result = ""
+        #非常巧妙的一个字典
+        dic = {0: '0', 1: '1', 2: '2', 3: '3', 
+                4: '4', 5: '5', 6: '6', 7: '7', 
+                8:'8', 9: '9', 10: 'a', 11: 'b', 
+                12: 'c', 13: 'd', 14: 'e', 15: 'f'}
+
+
+        while num != 0:
+            result = dic[num % 16] + result
+            num //= 16
+
+        return result
+```
+
+
+
 
 
