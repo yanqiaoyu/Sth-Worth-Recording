@@ -800,5 +800,39 @@ class Solution:
         return FakePre.next
 ```
 
+## LeetCode 110.平衡二叉树
 
+本质还是一个后序遍历
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    def __init__(self):
+        self.res = True
+
+    def isBalanced(self, root: TreeNode) -> bool:
+        self.helper(root)
+        return self.res
+    
+    def helper(self, root):
+        #递归到达叶子节点终止
+        if not root:
+            return 0
+        
+        #递归，本质还是个后序
+        left = self.helper(root.left) + 1
+        right = self.helper(root.right) + 1
+
+        #如果左右子树高度大于1，存在子树不平衡
+        if abs(right - left) > 1: 
+            self.res = False
+
+        #否则正常return一个最大值
+        return max(left, right)
+```
 
