@@ -1055,5 +1055,39 @@ class Solution:
         self.DFS(grid, i, j+1)
 ```
 
+## LeetCode **63. 不同路径 II**
 
+动态规划基础题，现在的我已经能够理解了
+
+```python
+class Solution:
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        #动态规划
+
+        #能够到达dp[i][j]的路线数与什么有关？
+        #机器人只能往下或者往右，因此某个格子能够到达，它上方或者左方的格子必然可以到达
+        #那么路线数，就是上方与左方的路线数相加
+        #为了保证上方与左方有值，注意顺序，从左往右，从上往下
+        width = len(obstacleGrid[0])
+        height = len(obstacleGrid)
+
+        #1.存储路线数的一个矩阵
+        result = [ [0]*width for i in range(height) ]
+
+        #2.开始遍历
+        for i in range(height):
+            for j in range(width):
+                #当前的格子不是障碍物，才有计算步数的意义
+                if obstacleGrid[i][j] != 1:
+                    # 第一个格子
+                    if i == 0 and j == 0:
+                        result[i][j] = 1
+                    # 不是第一个格子，参考左边和上边
+                    else:
+                        left = result[i][j-1] if j != 0 else 0
+                        right = result[i-1][j] if i != 0 else 0
+                        result[i][j] = left+right
+        #求的是最后一个的结果
+        return result[-1][-1]
+```
 
