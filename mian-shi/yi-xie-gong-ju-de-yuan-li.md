@@ -18,3 +18,7 @@ Fiddler的工作原理与中间人攻击非常类似，Fiddler是客户端与服
 
 最后我们通过JSON Wire Protocol进行指令的发送，以及获取命令执行的结果，保证了对于不同的语言的兼容性
 
+## 3.说说UIAutomator的原理？
+
+
+
