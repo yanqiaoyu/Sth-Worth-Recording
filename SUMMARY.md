@@ -26,6 +26,7 @@
 ## 面试
 
 * [测试用例设计](mian-shi/ce-shi-yong-li-she-ji.md)
+* [接口测试](mian-shi/jie-kou-ce-shi.md)
 * [测试理论基础](mian-shi/ce-shi-ji-chu.md)
 * [数据库](mian-shi/shu-ju-ku-mian-shi.md)
 * [App](mian-shi/app-xiang-guan.md)
