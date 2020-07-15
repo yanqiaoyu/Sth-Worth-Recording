@@ -195,6 +195,8 @@ Linux里面2MSL是60秒
 
 参考 [https://www.zhihu.com/question/271701044](https://www.zhihu.com/question/271701044)
 
+[https://mp.weixin.qq.com/s/tH8RFmjrveOmgLvk9hmrkw](https://mp.weixin.qq.com/s/tH8RFmjrveOmgLvk9hmrkw)
+
 为什么是四次挥手呢？因为在三次握手中，服务端的ACK和SYN是一起发送的，
 
 而在四次挥手中，客户端主动发送了FIN报文后，服务端会先回一个ACK，等服务端处理完要发送的信息，才会发送FIN，因此四次挥手多就是多在这一步
