@@ -37,5 +37,4 @@
 * [Python相关](mian-shi/python-xiang-guan.md)
 * [ByteDancer专题](mian-shi/bytedancer.md)
 * [智力题](mian-shi/zhi-li-ti.md)
-* [深信服专题](mian-shi/shen-xin-fu-zhuan-ti.md)
 
