@@ -36,5 +36,6 @@
 * [操作系统](mian-shi/cao-zuo-xi-tong.md)
 * [Python相关](mian-shi/python-xiang-guan.md)
 * [ByteDancer专题](mian-shi/bytedancer.md)
+* [蚂蚁金服专题](mian-shi/ma-yi-jin-fu-zhuan-ti.md)
 * [智力题](mian-shi/zhi-li-ti.md)
 
