@@ -67,5 +67,48 @@ print(result)
 
 ## 实现斐波那契数列
 
+迭代，递归，带缓存的递归
+
+```python
+class Solution:
+    def fib(self, N: int) -> int:
+        '''递归
+        if N < 2:
+            return N
+        return self.fib(N-2) + self.fib(N-1)
+        '''
+
+        '''迭代
+        if N < 2:
+            return N
+        
+        a = 0
+        b = 1
+
+        for i in range(N):
+            a, b = b, a+b
+        return a
+        '''
+        
+        '''带缓存的递归
+        
+        if N < 2:
+            return N
+        
+        if N in self.cache:
+            return self.cache[N]
+        else:
+            self.cache[N] = self.fib(N-2)+self.fib(N-1)
+        return self.cache[N]
+
+    def __init__(self):
+        self.cache = {}
+    '''
+```
+
+## 3栈灯，3个开关，一个房间，一次开门的机会，找出3个开关各个对应的灯
+
+利用灯的温度，其他的你懂的
+
 
 
