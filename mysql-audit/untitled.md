@@ -1,4 +1,44 @@
 # MySQL协议分析
 
-[https://dev.mysql.com/doc/dev/mysql-server/latest/page\_protocol\_basic\_character\_set.html](https://dev.mysql.com/doc/dev/mysql-server/latest/page_protocol_basic_character_set.html)
+{% embed url="https://dev.mysql.com/doc/dev/mysql-server/latest/page\_protocol\_basic\_character\_set.html" %}
+
+## 一、协议基础
+
+### 1.基本数据类型
+
+整个MySQL协议使用了两种数据类型
+
+* 整数类型
+* 字符串类型
+
+下面我们分别来详细讲讲这两个数据类型
+
+#### 1）整数类型
+
+对于整数类型的数据，我们又分了两种情况
+
+* **定长整数类型** FixedLengthInteger
+* **长度编码的整数类型** LengthEncodedInteger
+
+对于定长的整数类型，没啥好说的，实际中用的不是很多，截个官网的图看看就好
+
+![&#x5B9A;&#x957F;&#x6574;&#x6570;&#x7C7B;&#x578B;](../.gitbook/assets/image%20%285%29.png)
+
+对于不定长的整数类型，则需要消耗1、3、4或9个字节的整数，具体取决于其数值，官网给出的说明如下如所示
+
+![&#x957F;&#x5EA6;&#x7F16;&#x7801;&#x7684;&#x6574;&#x6570;&#x7C7B;&#x578B;](../.gitbook/assets/image%20%284%29.png)
+
+请注意，无论是哪种数据类型，**最低有效字节都存储在数值的前面**，也就是我们熟知的小端存储，举一个很容易理解的例子：如果要用不定长的数据类型来表示512，应该怎么做？
+
+显然，根据官方文档给出的格式标准，512应当以0xFC开头
+
+![](../.gitbook/assets/image%20%282%29.png)
+
+接下来，就是用十六进制表示512了，512的十六进制是0x200，但是格式要求我们用2byte去填充，改一下便是 0x02 0x00，但是这样还不够，前面说了MySQL协议采用的是小端存储，而小端存储是与人类正常阅读顺序相反的（具体细节可以自行查询），因此，用MySQL协议描述十进制512最终的结果应当是
+
+```text
+0xFC 0x00 0x02
+```
+
+
 
