@@ -88,4 +88,6 @@ MySQL在进行封包时有自己的一套规则，具体来说
 > [https://scala.cool/2017/11/mysql-protocol/](https://scala.cool/2017/11/mysql-protocol/)
 >
 > [http://hutaow.com/blog/2013/11/06/mysql-protocol-analysis/\#42-](http://hutaow.com/blog/2013/11/06/mysql-protocol-analysis/#42-)
+>
+> [https://dev.mysql.com/doc/internals/en/com-delayed-insert.html](https://dev.mysql.com/doc/internals/en/com-delayed-insert.html)
 
