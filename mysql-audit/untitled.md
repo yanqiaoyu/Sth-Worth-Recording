@@ -87,7 +87,7 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 直接看报文结构太过生硬，下面我们来通过实际的抓包结果一探究竟
 
-![](../.gitbook/assets/image%20%2833%29.png)
+![](../.gitbook/assets/image%20%2834%29.png)
 
 使用Navicat登录上我的个人服务器的MySQL Server，并使用Wireshark进行抓包，可以看到，一次典型的登录的报文交互如上图所示
 
@@ -125,7 +125,7 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 客户端给出的报文响应有两种，一种叫response41，另一种叫response320，其中，response41是4.1版本之后使用的，此次抓包的Response也是41，这里仅给出responset41的解析
 
-![](../.gitbook/assets/image%20%2830%29.png)
+![](../.gitbook/assets/image%20%2831%29.png)
 
 ![](../.gitbook/assets/image%20%2816%29.png)
 
@@ -151,7 +151,7 @@ MySQL在进行封包时有自己的一套规则，具体来说
 * 0x00 COM\_SLEEP \(服务器内部指令，客户端无法执行\)
 * 0x01 COM\_QUIT  返回值：退出，连接关闭
 
-![](../.gitbook/assets/image%20%2836%29.png)
+![](../.gitbook/assets/image%20%2837%29.png)
 
 * 0x02 COM\_INIT\_DB 执行 use xxx; 语句，即可抓到该包 返回值OK or Err
 
@@ -161,11 +161,11 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 ![](../.gitbook/assets/image%20%2824%29.png)
 
-![](../.gitbook/assets/image%20%2827%29.png)
+![](../.gitbook/assets/image%20%2828%29.png)
 
 * 0x04 COM\_FIELD\_LIST 查询表结构，执行show columns from xxx; 注意，在5.7版本之后移动到了COM\_QUERY中执行
 
-![](../.gitbook/assets/image%20%2831%29.png)
+![](../.gitbook/assets/image%20%2832%29.png)
 
 *  从MySQL 5.7.11之后，0x05 COM\_CREATE\_DB && 0x06 COM\_DROP\_DB 统统移入COM\_QUERY中执行
 
@@ -222,16 +222,34 @@ MySQL在进行封包时有自己的一套规则，具体来说
 * 0x0b COM\_CONNECT 服务器内部指令
 * 0x0c COM\_PROCESS\_KILL 杀死某个连接 从5.7.11开始，移入了COM\_QUERY
 
-![](../.gitbook/assets/image%20%2834%29.png)
+![](../.gitbook/assets/image%20%2835%29.png)
 
 * 0x0d COM\_DEBUG 要求服务器将调试信息保存下来，保存的信息多少依赖于编译选项设置（debug=no\|yes\|full），依赖代码实现
 * 0x0e COM\_PING 检查与服务器之间的连通性，依赖代码实现
 * 0x0f COM\_TIME 服务器内部指令
 * 0x10 COM\_DELAYED\_INSERT 服务器内部指令
 * 0x11 COM\_CHANGE\_USER 切换当前用户，依赖代码实现
+* 0x12 COM\_BINLOG\_DUMP  向主机 请求给定位置的二进制日志网络流
+
+![](../.gitbook/assets/image%20%2827%29.png)
+
+执行 show binary logs即可
+
+* 0x13 COM\_TABLE\_DUMP 丢弃一张表
+* 0x14 COM\_CONNECT\_OUT 内部指令
+* 0x15 COM\_REGISTER\_SLAV 注册一个从数据库
+* 0x16 COM\_STMT\_PREPARE 根据传递的查询字符串创建准备好的语句
+* 0x17 COM\_STMT\_EXECUTE  要求服务器执行由标识的准备好的语句
+* 0x18 COM\_STMT\_SEND\_LONG\_DATA 发送列的数据
+* 0x19 COM\_STMT\_CLOSE 取消分配准备好的语句
+* 0x1a COM\_STMT\_RESET  重置通过COM\_STMT\_SEND\_LONG\_DATA命令累积的准备好的语句的数据
+* 0x1b COM\_SET\_OPTION 启用和禁用当前连接的功能
+* 0x1c COM\_STMT\_FETCH  在COM\_STMT\_EXECUTE之后从现有结果集中获取行
 * 0x1d COM\_DAEMON 服务器内部指令
+* 0x1e COM\_BINLOG\_DUMP\_GTID  根据GTID 请求Binlog网络流
 * 0x1f COM\_RESET\_CONNECTION 重置会话状态
-* 0x
+
+
 
 > 参考资料
 >
