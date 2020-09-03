@@ -87,7 +87,7 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 直接看报文结构太过生硬，下面我们来通过实际的抓包结果一探究竟
 
-![](../.gitbook/assets/image%20%2818%29.png)
+![](../.gitbook/assets/image%20%2830%29.png)
 
 使用Navicat登录上我的个人服务器的MySQL Server，并使用Wireshark进行抓包，可以看到，一次典型的登录的报文交互如上图所示
 
@@ -95,17 +95,17 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 **握手初始化报文**消息结构如下：（1.Server-&gt;Client）
 
-![](../.gitbook/assets/image%20%2811%29.png)
+![](../.gitbook/assets/image%20%2813%29.png)
 
 我们点开在wireshark中的报文
 
-![](../.gitbook/assets/image%20%2814%29.png)
+![](../.gitbook/assets/image%20%2819%29.png)
 
 根据我们前面所了解的报文结构，前3位标识了当前数据长度，即4a 00 00，第4位为序号，即00。显然当前长度为 0x00004a，即74，序号为0，与wireshark解析出的结果一致。
 
 再选中Server Greeting，看看具体的消息结构
 
-![](../.gitbook/assets/image%20%2815%29.png)
+![](../.gitbook/assets/image%20%2820%29.png)
 
 1. 1个字节的协议版本号：0a，解析出的结果为10，从3.21.0开始，协议版本都是v10，而不是v9了
 2. N个字节的版本信息：这里是5.7.29，一个字符对应一个ASCII码，并且由于是Null结尾的字符串类型，所以是 35 2e 37 2e 32 39 00
@@ -125,9 +125,9 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 客户端给出的报文响应有两种，一种叫response41，另一种叫response320，其中，response41是4.1版本之后使用的，此次抓包的Response也是41，这里仅给出responset41的解析
 
-![](../.gitbook/assets/image%20%2817%29.png)
+![](../.gitbook/assets/image%20%2827%29.png)
 
-![](../.gitbook/assets/image%20%2812%29.png)
+![](../.gitbook/assets/image%20%2815%29.png)
 
 报文长度略去不表，值得注意的是，序列号变成了1，这与我们的认知是一致的，即在同一个交互序列内，序列号会+1
 
@@ -140,13 +140,76 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 **服务端OK报文**
 
-![](../.gitbook/assets/image%20%2810%29.png)
+![](../.gitbook/assets/image%20%2812%29.png)
 
 认证成功后，服务端就会返回一个OK给客户端，此时登陆成功。OK报文的具体内容非常简单，不做细致讲解
 
 #### 3.2 命令报文
 
 登录完成之后，就是发送命令的阶段了，这一部分有非常多的报文，我们挑选其中非常常见及重要的报文进行详解
+
+* 0x00 COM\_SLEEP \(服务器内部指令，客户端无法执行\)
+* 0x01 COM\_QUIT  返回值：退出，连接关闭
+
+![](../.gitbook/assets/image%20%2832%29.png)
+
+* 0x02 COM\_INIT\_DB 执行 use xxx; 语句，即可抓到该包 返回值OK or Err
+
+![](../.gitbook/assets/image%20%2823%29.png)
+
+* 0x03 COM\_QUERY 最为常见的MySQL指令，例如 select \* from 、desc xxxtable都是走这个指令出去的
+
+![](../.gitbook/assets/image%20%2821%29.png)
+
+![](../.gitbook/assets/image%20%2824%29.png)
+
+* 0x04 COM\_FIELD\_LIST 查询表结构，执行show columns from xxx; 注意，在5.7版本之后移动到了COM\_QUERY中执行
+
+![](../.gitbook/assets/image%20%2828%29.png)
+
+*  从MySQL 5.7.11之后，0x05 COM\_CREATE\_DB && 0x06 COM\_DROP\_DB 统统移入COM\_QUERY中执行
+
+![](../.gitbook/assets/image%20%2818%29.png)
+
+![](../.gitbook/assets/image%20%2811%29.png)
+
+* 0x07 从MySQL 5.7.11之后，COM\_REFRESH 刷新指令移动到COM\_QUERY中执行
+
+对于flush指令来说，存在8个参数
+
+| sub\_command | Constant Name | Description |
+| :--- | :--- | :--- |
+| 0x01 | `REFRESH_GRANT` | Refresh grant tables `FLUSH PRIVILEGES` |
+| 0x02 | `REFRESH_LOG` | Start on new log file `FLUSH LOGS` |
+| 0x04 | `REFRESH_TABLES` | Close all tables `FLUSH TABLES` |
+| 0x08 | `REFRESH_HOSTS` | Flush host cache `FLUSH HOSTS` |
+| 0x10 | `REFRESH_STATUS` | Flush status variables `FLUSH STATUS` |
+| 0x20 | `REFRESH_THREADS` | Flush thread cache |
+| 0x40 | `REFRESH_SLAVE` | Reset master info and restart slave thread `RESET SLAVE` |
+| 0x80 | `REFRESH_MASTER` | Remove all binary logs in the index and truncate the index `RESET MASTER` |
+
+如果想要执行不同的flush指令，只需要执行  flush + 参数即可，例如 flush privilege
+
+![](../.gitbook/assets/image%20%2814%29.png)
+
+* 0x08 COM\_SHUTDOWN 5.7.9以后，shutdown被移动到 COM\_QUERY中执行，在8.0中移除该指令
+
+下面是他的一些参数
+
+| Type | Constant Name | Description |
+| :--- | :--- | :--- |
+| 0x00 | SHUTDOWN\_DEFAULT | defaults to SHUTDOWN\_WAIT\_ALL\_BUFFERS |
+| 0x01 | SHUTDOWN\_WAIT\_CONNECTIONS | wait for existing connections to finish |
+| 0x02 | SHUTDOWN\_WAIT\_TRANSACTIONS | wait for existing trans to finish |
+| 0x08 | SHUTDOWN\_WAIT\_UPDATES | wait for existing updates to finish \(=&gt; no partial MyISAM update\) |
+| 0x10 | SHUTDOWN\_WAIT\_ALL\_BUFFERS | flush InnoDB buffers and other storage engines' buffers |
+| 0x11 | SHUTDOWN\_WAIT\_CRITICAL\_BUFFERS | don't flush InnoDB buffers, flush other storage engines' buffers |
+| 0xfe | KILL\_QUERY |  |
+| 0xff | KILL\_CONNECTION |  |
+
+虽然官方文档定义了很多种shutdown的参数，但是实际上只有SHUTDOWN\_WAIT\_ALL\_BUFFERS可用
+
+
 
 
 
