@@ -87,7 +87,7 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 直接看报文结构太过生硬，下面我们来通过实际的抓包结果一探究竟
 
-![](../.gitbook/assets/image%20%2834%29.png)
+![](../.gitbook/assets/image%20%2838%29.png)
 
 使用Navicat登录上我的个人服务器的MySQL Server，并使用Wireshark进行抓包，可以看到，一次典型的登录的报文交互如上图所示
 
@@ -95,17 +95,17 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 **握手初始化报文**消息结构如下：（1.Server-&gt;Client）
 
-![](../.gitbook/assets/image%20%2814%29.png)
+![](../.gitbook/assets/image%20%2815%29.png)
 
 我们点开在wireshark中的报文
 
-![](../.gitbook/assets/image%20%2822%29.png)
+![](../.gitbook/assets/image%20%2824%29.png)
 
 根据我们前面所了解的报文结构，前3位标识了当前数据长度，即4a 00 00，第4位为序号，即00。显然当前长度为 0x00004a，即74，序号为0，与wireshark解析出的结果一致。
 
 再选中Server Greeting，看看具体的消息结构
 
-![](../.gitbook/assets/image%20%2823%29.png)
+![](../.gitbook/assets/image%20%2825%29.png)
 
 1. 1个字节的协议版本号：0a，解析出的结果为10，从3.21.0开始，协议版本都是v10，而不是v9了
 2. N个字节的版本信息：这里是5.7.29，一个字符对应一个ASCII码，并且由于是Null结尾的字符串类型，所以是 35 2e 37 2e 32 39 00
@@ -125,9 +125,9 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 客户端给出的报文响应有两种，一种叫response41，另一种叫response320，其中，response41是4.1版本之后使用的，此次抓包的Response也是41，这里仅给出responset41的解析
 
-![](../.gitbook/assets/image%20%2831%29.png)
+![](../.gitbook/assets/image%20%2833%29.png)
 
-![](../.gitbook/assets/image%20%2816%29.png)
+![](../.gitbook/assets/image%20%2817%29.png)
 
 报文长度略去不表，值得注意的是，序列号变成了1，这与我们的认知是一致的，即在同一个交互序列内，序列号会+1
 
@@ -140,7 +140,7 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 **服务端OK报文**
 
-![](../.gitbook/assets/image%20%2813%29.png)
+![](../.gitbook/assets/image%20%2814%29.png)
 
 认证成功后，服务端就会返回一个OK给客户端，此时登陆成功。OK报文的具体内容非常简单，不做细致讲解
 
@@ -151,27 +151,27 @@ MySQL在进行封包时有自己的一套规则，具体来说
 * 0x00 COM\_SLEEP \(服务器内部指令，客户端无法执行\)
 * 0x01 COM\_QUIT  返回值：退出，连接关闭
 
-![](../.gitbook/assets/image%20%2837%29.png)
+![](../.gitbook/assets/image%20%2843%29.png)
 
 * 0x02 COM\_INIT\_DB 执行 use xxx; 语句，即可抓到该包 返回值OK or Err
 
-![](../.gitbook/assets/image%20%2826%29.png)
+![](../.gitbook/assets/image%20%2828%29.png)
 
 * 0x03 COM\_QUERY 最为常见的MySQL指令，例如 select \* from 、desc xxxtable都是走这个指令出去的
 
-![](../.gitbook/assets/image%20%2824%29.png)
+![](../.gitbook/assets/image%20%2826%29.png)
 
-![](../.gitbook/assets/image%20%2828%29.png)
+![](../.gitbook/assets/image%20%2830%29.png)
 
 * 0x04 COM\_FIELD\_LIST 查询表结构，执行show columns from xxx; 注意，在5.7版本之后移动到了COM\_QUERY中执行
 
-![](../.gitbook/assets/image%20%2832%29.png)
+![](../.gitbook/assets/image%20%2835%29.png)
 
 *  从MySQL 5.7.11之后，0x05 COM\_CREATE\_DB && 0x06 COM\_DROP\_DB 统统移入COM\_QUERY中执行
 
-![](../.gitbook/assets/image%20%2821%29.png)
+![](../.gitbook/assets/image%20%2823%29.png)
 
-![](../.gitbook/assets/image%20%2812%29.png)
+![](../.gitbook/assets/image%20%2813%29.png)
 
 * 0x07 从MySQL 5.7.11之后，COM\_REFRESH 刷新指令移动到COM\_QUERY中执行
 
@@ -190,7 +190,7 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 如果想要执行不同的flush指令，只需要执行  flush + 参数即可，例如 flush privilege
 
-![](../.gitbook/assets/image%20%2815%29.png)
+![](../.gitbook/assets/image%20%2816%29.png)
 
 * 0x08 COM\_SHUTDOWN 5.7.9以后，shutdown被移动到 COM\_QUERY中执行，在8.0中移除该指令
 
@@ -209,20 +209,20 @@ MySQL在进行封包时有自己的一套规则，具体来说
 
 虽然官方文档定义了很多种shutdown的参数，但是实际上只有SHUTDOWN\_WAIT\_ALL\_BUFFERS可用
 
-![](../.gitbook/assets/image%20%2811%29.png)
+![](../.gitbook/assets/image%20%2812%29.png)
 
 * 0x09 COM\_STATISTICS 获取服务器内部信息，同样移入了COM\_QUERY
 
-![](../.gitbook/assets/image%20%2818%29.png)
+![](../.gitbook/assets/image%20%2820%29.png)
 
 * 0x0a COM\_PROCESS\_INFO获取连接信息，从5.7.11开始，移入了COM\_QUERY
 
-![](../.gitbook/assets/image%20%2817%29.png)
+![](../.gitbook/assets/image%20%2819%29.png)
 
 * 0x0b COM\_CONNECT 服务器内部指令
 * 0x0c COM\_PROCESS\_KILL 杀死某个连接 从5.7.11开始，移入了COM\_QUERY
 
-![](../.gitbook/assets/image%20%2835%29.png)
+![](../.gitbook/assets/image%20%2841%29.png)
 
 * 0x0d COM\_DEBUG 要求服务器将调试信息保存下来，保存的信息多少依赖于编译选项设置（debug=no\|yes\|full），依赖代码实现
 * 0x0e COM\_PING 检查与服务器之间的连通性，依赖代码实现
@@ -231,7 +231,7 @@ MySQL在进行封包时有自己的一套规则，具体来说
 * 0x11 COM\_CHANGE\_USER 切换当前用户，依赖代码实现
 * 0x12 COM\_BINLOG\_DUMP  向主机 请求给定位置的二进制日志网络流
 
-![](../.gitbook/assets/image%20%2827%29.png)
+![](../.gitbook/assets/image%20%2829%29.png)
 
 执行 show binary logs即可
 
