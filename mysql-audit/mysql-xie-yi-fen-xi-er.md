@@ -18,7 +18,7 @@ OK包是从服务器发送到客户端，用来指示某个指令执行成功的
 
 以下是官方文档给出的OK包的结构
 
-![](../.gitbook/assets/image%20%2834%29.png)
+![](../.gitbook/assets/image%20%2835%29.png)
 
 既然官方说OK包也可以指代EOF包，那么肯定存在一套区分这两种包的规则
 
@@ -48,7 +48,7 @@ Err包，顾名思义就是用来指示错误信息的，如果  CLIENT\_PROTOCO
 
 先来看看Err包的结构详情
 
-![](../.gitbook/assets/image%20%2839%29.png)
+![](../.gitbook/assets/image%20%2840%29.png)
 
 同样的，我们执行几个错误的MySQL语句，然后抓包，看看具体报文
 
@@ -58,7 +58,15 @@ Err包，顾名思义就是用来指示错误信息的，如果  CLIENT\_PROTOCO
 use None;
 ```
 
-![](../.gitbook/assets/image%20%2840%29.png)
+![](../.gitbook/assets/image%20%2841%29.png)
 
 Error Code返回的是1049，通过查询可得，代表着数据库不存在，与实际一致
+
+#### 1.1.3 EOF Packet
+
+从5.7.5开始，EOF包就已经不推荐使用了，我们简略的介绍一下包的结构即可
+
+![](../.gitbook/assets/image%20%2825%29.png)
+
+
 
