@@ -247,7 +247,7 @@ MySQL在进行封包时有自己的一套规则，具体来说
 * 0x1c COM\_STMT\_FETCH  在COM\_STMT\_EXECUTE之后从现有结果集中获取行
 * 0x1d COM\_DAEMON 服务器内部指令
 * 0x1e COM\_BINLOG\_DUMP\_GTID  根据GTID 请求Binlog网络流
-* 0x1f COM\_RESET\_CONNECTION 重置会话状态
+* 0x1f COM\_RESET\_CONNECTION 重置会话[状态](www.baidu.com)
 
 
 
