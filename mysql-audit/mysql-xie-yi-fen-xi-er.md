@@ -2,15 +2,13 @@
 
 ## 1.响应报文
 
-### 1.1 通用响应报文
-
 对于客户端发送给服务器的大多数命令，服务器将作为响应返回以下数据包之一：
 
 * OK Packet
 * Err Packet
 * EOF Packet
 
-#### 1.1.1 OK Packet
+### 1.1 OK Packet
 
 OK包是从服务器发送到客户端，用来指示某个指令执行成功的包。根据官方文档的推荐，从5.7.5开始，OK包也用于指代EOF包，并且不推荐使用EOF包。
 
@@ -42,7 +40,7 @@ set AutoCommit = On
 
 ![](../.gitbook/assets/image%20%2818%29.png)
 
-#### 1.1.2 Err Packet
+### 1.2 Err Packet
 
 Err包，顾名思义就是用来指示错误信息的，如果  CLIENT\_PROTOCOL\_41这个标志位有效，那么包中还将包含SQL状态值
 
@@ -62,7 +60,7 @@ use None;
 
 Error Code返回的是1049，通过查询可得，代表着数据库不存在，与实际一致
 
-#### 1.1.3 EOF Packet
+### 1.3 EOF Packet
 
 从5.7.5开始，EOF包就已经不推荐使用了，我们简略的介绍一下包的结构即可
 
